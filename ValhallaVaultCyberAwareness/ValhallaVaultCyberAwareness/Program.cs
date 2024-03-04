@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
 using ValhallaVaultCyberAwareness.Data;
+using ValhallaVaultCyberAwareness.Data.Managers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,7 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = new KeyManager().GetKey("C:\\Users\\Skola\\Desktop\\safe.txt") ?? throw new ArgumentNullException("The specified path is not valid");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
