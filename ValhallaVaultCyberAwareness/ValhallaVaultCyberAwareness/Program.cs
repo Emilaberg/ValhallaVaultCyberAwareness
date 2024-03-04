@@ -25,14 +25,14 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = new KeyManager().GetKey("C:\\Users\\Skola\\Desktop\\safe.txt") ?? throw new ArgumentNullException("The specified path is not valid");
+var connectionString = new KeyManager().GetKey() ?? throw new ArgumentNullException("The specified path is not valid");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
 {
-    //l‰gg in era options h‰r fˆr max login attempts, olika password requirements etc.
+    //l√§gg in era options h√§r f√∂r max login attempts, olika password requirements etc.
     options.SignIn.RequireConfirmedAccount = true;
 })
     .AddEntityFrameworkStores<ApplicationDbContext>()
