@@ -2,7 +2,8 @@
 {
     public class KeyManager
     {
-        public string? GetKey(string filepath)
+        private readonly string filepath = "C:\\Users\\Skola\\Desktop\\safe.txt";
+        public string? GetKey()
         {
             return File.Exists(filepath) ? File.ReadAllText(filepath) : null;
         }
