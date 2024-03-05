@@ -2,11 +2,13 @@
 
 namespace ValhallaVaultCyberAwareness.Data.Models
 {
-    //En vanlig modell som gör absolut ingenting.
-    public class DefaultModel
+    public class CategoryModel
     {
         [Key]
         public int Id { get; set; }
-        public string Name { get; set; } = null!;
+        public string? CategoryName { get; set; }
+
+
+
     }
 }
