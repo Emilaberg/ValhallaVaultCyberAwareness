@@ -1,4 +1,5 @@
-﻿using ValhallaVaultCyberAwareness.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Models;
 
 namespace ValhallaVaultCyberAwareness.Repositories
@@ -13,14 +14,14 @@ namespace ValhallaVaultCyberAwareness.Repositories
         }
         public async Task<List<CategoryModel>> GetAllCategories()
         {
-            var categories = await _context.Category.ToListAsync();
+            var categories = await _context.Categories.ToListAsync();
 
             return categories;
 
         }
         public async Task<CategoryModel> GetCategoryById(int id)
         {
-            var singleCategory = await _context.Category.FirstOrDefaultAsync(c => c.Id == id);
+            var singleCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
             if (singleCategory != null)
             {
@@ -42,11 +43,11 @@ namespace ValhallaVaultCyberAwareness.Repositories
 
         public async Task<CategoryModel> DeleteCategory(int id)
         {
-            var categoryToDelete = await _context.Category.FirstOrDefaultAsync(c => c.Id == id);
+            var categoryToDelete = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
             if (categoryToDelete != null)
             {
-                _context.Category.Remove(categoryToDelete);
+                _context.Categories.Remove(categoryToDelete);
 
                 await _context.SaveChangesAsync();
                 return categoryToDelete;
@@ -55,7 +56,7 @@ namespace ValhallaVaultCyberAwareness.Repositories
         }
         public async Task<CategoryModel> UpdateCategory(CategoryModel updatedCategory)
         {
-            var categoryToUpdate = await _context.Category.FirstOrDefaultAsync(c => c.Id == updatedCategory.Id);
+            var categoryToUpdate = await _context.Categories.FirstOrDefaultAsync(c => c.Id == updatedCategory.Id);
 
             if (categoryToUpdate != null)
             {

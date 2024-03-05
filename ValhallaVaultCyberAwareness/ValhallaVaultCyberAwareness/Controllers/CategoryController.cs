@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ValhallaVaultCyberAwareness.Data.Models;
+using ValhallaVaultCyberAwareness.Repositories;
 
 namespace ValhallaVaultCyberAwareness.Controllers
 {
