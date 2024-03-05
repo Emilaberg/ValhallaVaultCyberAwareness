@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ValhallaVaultCyberAwareness.Data;
+﻿using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Models;
 
 namespace ValhallaVaultCyberAwareness.Repositories
 {
+
     public class CategoryRepository
     {
         private readonly ApplicationDbContext _context;

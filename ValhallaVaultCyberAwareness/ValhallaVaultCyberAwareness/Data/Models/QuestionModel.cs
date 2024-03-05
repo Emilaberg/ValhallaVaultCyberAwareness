@@ -2,8 +2,8 @@
 
 namespace ValhallaVaultCyberAwareness.Data.Models
 {
-    //En vanlig modell som gör absolut ingenting.
-    public class DefaultModel
+
+    public class QuestionModel
     {
         [Key]
         public int Id { get; set; }
