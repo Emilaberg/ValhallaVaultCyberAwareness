@@ -7,6 +7,21 @@ namespace ValhallaVaultCyberAwareness.Data.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Description { get; set; } = null!;
+        //själva frågan till 
+        public string Question { get; set; } = null!;
+
+        //förklaring till korrekt fråga
+        public string? Explaination { get; set; }
+
+        //relationen till Subkategorin
+        public int SubCategoryId { get; set; }
+        public SubCategoryModel SubCategory { get; set; } = null!;
+
+        //relationen till prompts
+        public List<PromptModel> Promps { get; set; } = [];
+
+        //many to many relationship
+        public List<ApplicationUser> ApplicationUsers { get; } = [];
+
     }
 }

@@ -6,9 +6,9 @@ namespace ValhallaVaultCyberAwareness.Data.Models
     {
         [Key]
         public int Id { get; set; }
+        //Exempelvis: Att skydda sig mot bedrägerier
         public string? CategoryName { get; set; }
-
-
+        public List<SegmentModel> Segments { get; set; } = [];
 
     }
 }
