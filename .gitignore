@@ -363,4 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Gitignore Keymanager
-KeyManager.cs
+**/KeyManager.cs
