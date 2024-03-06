@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
 using ValhallaVaultCyberAwareness.Data.Models;
 
 namespace ValhallaVaultCyberAwareness.Data
@@ -8,6 +7,8 @@ namespace ValhallaVaultCyberAwareness.Data
     public class ApplicationUser : IdentityUser
     {
         public List<QuestionModel> AnsweredQuestions { get; } = [];
+
+
     }
 
 }
