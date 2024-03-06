@@ -2,7 +2,7 @@
 
 namespace ValhallaVaultCyberAwareness.Repositories
 {
-    public class ValhallaUow
+    public class ValhallaUow : IValhallaUow
     {
         private readonly ApplicationDbContext _context;
 
