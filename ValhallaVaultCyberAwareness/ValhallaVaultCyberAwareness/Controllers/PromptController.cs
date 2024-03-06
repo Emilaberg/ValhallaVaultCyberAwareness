@@ -6,21 +6,20 @@ namespace ValhallaVaultCyberAwareness.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class PromptController : ControllerBase
     {
-
         private readonly ValhallaUow _uow;
 
-        public CategoryController(ValhallaUow uow)
+
+        public PromptController(ValhallaUow uow)
         {
             _uow = uow;
-
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<CategoryModel>>> GetAllCategories()
+        public async Task<ActionResult<List<PromptModel>>> GetAllCategories()
         {
-            var categories = await _uow.CategoryRepo.GetAllCategories();
+            var categories = await _uow.PromptRepo.GetAllPrompts();
             if (categories != null)
             {
                 return Ok(categories);
@@ -30,9 +29,9 @@ namespace ValhallaVaultCyberAwareness.Controllers
 
         [HttpGet("{id}")]
 
-        public async Task<ActionResult<CategoryModel>> GetCategoryById(int id)
+        public async Task<ActionResult<PromptModel>> GetPromptById(int id)
         {
-            var result = await _uow.CategoryRepo.GetCategoryById(id);
+            var result = await _uow.PromptRepo.GetPromptById(id);
 
             if (result != null)
             {
@@ -43,22 +42,22 @@ namespace ValhallaVaultCyberAwareness.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CategoryModel>> AddCategory(CategoryModel category)
+        public async Task<ActionResult<PromptModel>> AddPrompt(PromptModel Prompt)
         {
-            var newCategory = await _uow.CategoryRepo.AddCategory(category);
+            var newPrompt = await _uow.PromptRepo.AddPrompt(Prompt);
 
-            if (newCategory != null)
+            if (newPrompt != null)
             {
-                return Ok(newCategory);
+                return Ok(newPrompt);
             }
             return NotFound();
         }
 
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<CategoryModel>> DeleteCategory(int id)
+        public async Task<ActionResult<PromptModel>> DeletePrompt(int id)
         {
-            var result = await _uow.CategoryRepo.DeleteCategory(id);
+            var result = await _uow.PromptRepo.DeletePrompt(id);
 
             if (result != null)
             {
@@ -69,15 +68,14 @@ namespace ValhallaVaultCyberAwareness.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<CategoryModel>> UpdateCategory(CategoryModel updatedCategory)
+        public async Task<ActionResult<PromptModel>> UpdatePrompt(PromptModel updatedPrompt)
         {
-            if (updatedCategory != null)
+            if (updatedPrompt != null)
             {
-                await _uow.CategoryRepo.UpdateCategory(updatedCategory);
-                return Ok(updatedCategory);
+                await _uow.PromptRepo.UpdatePrompt(updatedPrompt);
+                return Ok(updatedPrompt);
             }
             return NotFound();
         }
-
     }
 }
