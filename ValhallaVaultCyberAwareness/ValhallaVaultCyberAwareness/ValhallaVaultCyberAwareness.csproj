@@ -7,6 +7,8 @@
     <UserSecretsId>aspnet-ValhallaVaultCyberAwareness-a544f3ce-e006-4484-8652-43415745290f</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
     <ProjectReference Include="..\ValhallaVaultCyberAwareness.Client\ValhallaVaultCyberAwareness.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
