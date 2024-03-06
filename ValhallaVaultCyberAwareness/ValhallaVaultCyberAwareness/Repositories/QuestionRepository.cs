@@ -1,6 +1,6 @@
 ﻿namespace ValhallaVaultCyberAwareness.Repositories
 {
-    public class QuestionReepository
+    public class QuestionRepository
     {
     }
 }
