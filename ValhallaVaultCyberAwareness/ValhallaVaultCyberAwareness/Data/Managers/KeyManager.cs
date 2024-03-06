@@ -1,4 +1,4 @@
-﻿namespace ValhallaVaultCyberAwareness.Data.Managers
+namespace ValhallaVaultCyberAwareness.Data.Managers
 {
     public class KeyManager
     {
