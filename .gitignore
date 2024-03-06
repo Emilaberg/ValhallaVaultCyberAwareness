@@ -400,5 +400,3 @@ FodyWeavers.xsd
 *.sln.iml
 
 **/KeyManager.cs
-
-ValhallaVaultCyberAwareness/ValhallaVaultCyberAwareness/Data/Managers/KeyManager.cs
