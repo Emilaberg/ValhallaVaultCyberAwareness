@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Models;
 using ValhallaVaultCyberAwareness.Repositories;
 
@@ -9,16 +8,17 @@ namespace ValhallaVaultCyberAwareness.Controllers
     [ApiController]
     public class QuestionController : ControllerBase
     {
-        private readonly ValhallaUow _uow;
-        private readonly ApplicationDbContext _context;
+        private readonly IValhallaUow _uow;
 
 
-        public QuestionController(ApplicationDbContext context)
+
+        public QuestionController(IValhallaUow uow)
         {
-            _context = context;
-            _uow = new(_context);
+
+            _uow = uow;
 
         }
+
         [HttpGet]
         public async Task<ActionResult<List<QuestionModel>>> GetAllquestion()
         {

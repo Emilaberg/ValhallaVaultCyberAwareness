@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
-using ValhallaVaultCyberAwareness.Controllers;
 using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Managers;
 using ValhallaVaultCyberAwareness.Repositories;
@@ -23,11 +22,8 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddScoped<IValhallaUow, ValhallaUow>();
-builder.Services.AddScoped<CategoryController>();
-builder.Services.AddScoped<SegmentController>();
-builder.Services.AddScoped<SubCategoryController>();
-builder.Services.AddScoped<QuestionController>();
-builder.Services.AddScoped<PromptController>();
+
+
 
 
 builder.Services.AddAuthentication(options =>
