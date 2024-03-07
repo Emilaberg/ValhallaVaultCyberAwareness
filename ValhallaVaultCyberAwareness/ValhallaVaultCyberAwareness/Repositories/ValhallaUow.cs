@@ -2,7 +2,7 @@
 
 namespace ValhallaVaultCyberAwareness.Repositories
 {
-    public class ValhallaUow
+    public class ValhallaUow : IValhallaUow
     {
         private readonly ApplicationDbContext _context;
 
@@ -16,11 +16,12 @@ namespace ValhallaVaultCyberAwareness.Repositories
         {
 
             _context = context;
-            CategoryRepo = new(context);
-            SegmentRepo = new(context);
-            SubCategoryRepo = new(context);
-            QuestionRepo = new(context);
-            PromptRepo = new(context);
+
+            CategoryRepo = new(_context);
+            SegmentRepo = new(_context);
+            SubCategoryRepo = new(_context);
+            QuestionRepo = new(_context);
+            PromptRepo = new(_context);
 
         }
         public async Task Complete()

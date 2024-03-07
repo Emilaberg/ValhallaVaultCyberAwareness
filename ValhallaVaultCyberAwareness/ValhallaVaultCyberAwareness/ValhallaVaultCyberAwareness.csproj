@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="Components\Pages\Categories\SubCategories\" />
+    <Folder Include="Data\Seeder\" />
   </ItemGroup>
 
 </Project>

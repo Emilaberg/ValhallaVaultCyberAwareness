@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Models;
 using ValhallaVaultCyberAwareness.Repositories;
 
@@ -8,13 +9,14 @@ namespace ValhallaVaultCyberAwareness.Controllers
     [ApiController]
     public class SegmentController : ControllerBase
     {
-
+        private readonly ApplicationDbContext _context;
         private readonly ValhallaUow _uow;
 
 
-        public SegmentController(ValhallaUow uow)
+        public SegmentController(ApplicationDbContext context)
         {
-            _uow = uow;
+            _context = context;
+            _uow = new(_context);
 
         }
 
