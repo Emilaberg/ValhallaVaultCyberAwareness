@@ -1,11 +1,15 @@
-﻿@page "/"
+﻿@page "/home"
+@using Microsoft.EntityFrameworkCore
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject NavigationManager NavigationManager
+@inject MyProgressService ProgressService
+@using ValhallaVaultCyberAwareness.Components.Pages
+@using ValhallaVaultCyberAwareness.Data
 
-<PageTitle>Home</PageTitle>
-
-<h1>Hello!</h1>
-
-<!-- Temp comment -->
-<!-- Temp comment -->
+<div>
+    <h1>Hello!</h1>
+</div>
 
 <p>
     Welcome to your new Valhalla Vault Cyber Awareness Training Portal.
@@ -13,9 +17,58 @@
     These are the different subjects you can learn about:
 </p>
 
-<ul>
-    <li><a href="/BasicITSecurity">Basic IT Security</a></li>
-    <li><a href="/Scams">How to protect yourself from scams</a></li>
-    <li><a href="/CyberSecurityCompanies">CyberSecurity for Companies</a></li>
-    <li><a href="/CyberEspionage">CyberEspionage</a></li>
-</ul>
+<SearchBox />
+
+@if (userProgress != null)
+{
+    foreach (var progress in userProgress)
+    {
+        <p>@progress.Key: @progress.Value%</p>
+    }
+}
+
+@code{
+    private Dictionary<string, double>? userProgress;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = "YourUserId"; // Replace with actual user id
+        userProgress = await ProgressService.GetUserProgress(userId);
+    }
+
+    public class MyProgressService
+    {
+        private readonly ApplicationDbContext _context;
+
+        public MyProgressService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<Dictionary<string, double>> GetUserProgress(string userId)
+        {
+            var progress = new Dictionary<string, double>();
+
+            var categories = await _context.SubCategories.ToListAsync();
+
+            foreach (var category in categories)
+            {
+                var totalQuestions = await _context.Questions
+                    .Where(q => q.SubCategoryId == category.Id)
+                    .CountAsync();
+
+                var answeredQuestions = await _context.Questions
+                    .Where(q => q.SubCategoryId == category.Id && q.ApplicationUsers.Any(u => u.Id == userId))
+                    .CountAsync();
+
+                if (totalQuestions > 0)
+                {
+                    var progressPercentage = (double)answeredQuestions / totalQuestions * 100;
+                    progress.Add(category.SubCategoryName ?? string.Empty, progressPercentage);
+                }
+            }
+
+            return progress;
+        }
+    }
+}
