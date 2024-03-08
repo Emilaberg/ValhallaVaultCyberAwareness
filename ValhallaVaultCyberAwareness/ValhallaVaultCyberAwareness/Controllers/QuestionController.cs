@@ -71,11 +71,12 @@ namespace ValhallaVaultCyberAwareness.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<QuestionModel>> Updatequestion(QuestionModel updatedquestion)
+        public async Task<ActionResult<QuestionModel>> Updatequestion(QuestionModel question)
         {
+            var updatedquestion = await _uow.QuestionRepo.UpdateQuestion(question);
+
             if (updatedquestion != null)
             {
-                await _uow.QuestionRepo.UpdateQuestion(updatedquestion);
                 return Ok(updatedquestion);
             }
             return NotFound();

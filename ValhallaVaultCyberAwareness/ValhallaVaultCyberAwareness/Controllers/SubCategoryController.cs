@@ -48,11 +48,11 @@ namespace ValhallaVaultCyberAwareness.Controllers
         [HttpPost]
         public async Task<ActionResult<SubCategoryModel>> AddSubCategory(SubCategoryModel subCategory)
         {
-            var newsubCategory = await _uow.SubCategoryRepo.AddSubCategory(subCategory);
+            var newSubCategory = await _uow.SubCategoryRepo.AddSubCategory(subCategory);
 
-            if (newsubCategory != null)
+            if (newSubCategory != null)
             {
-                return Ok(newsubCategory);
+                return Ok(newSubCategory);
             }
             return NotFound();
         }
@@ -72,12 +72,13 @@ namespace ValhallaVaultCyberAwareness.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<SubCategoryModel>> UpdateSubCategory(SubCategoryModel updatedsubCategory)
+        public async Task<ActionResult<SubCategoryModel>> UpdateSubCategory(SubCategoryModel category)
         {
-            if (updatedsubCategory != null)
+            var updatedSubCategory = await _uow.SubCategoryRepo.UpdateSubCategory(category);
+
+            if (updatedSubCategory != null)
             {
-                await _uow.SubCategoryRepo.UpdateSubCategory(updatedsubCategory);
-                return Ok(updatedsubCategory);
+                return Ok(updatedSubCategory);
             }
             return NotFound();
         }

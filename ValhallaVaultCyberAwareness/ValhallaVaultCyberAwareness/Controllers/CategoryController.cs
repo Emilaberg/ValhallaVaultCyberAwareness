@@ -20,6 +20,7 @@ namespace ValhallaVaultCyberAwareness.Controllers
         public async Task<ActionResult<List<CategoryModel>>> GetAllCategories()
         {
             var categories = await _uow.CategoryRepo.GetAllCategories();
+
             if (categories != null)
             {
                 return Ok(categories);
@@ -68,11 +69,12 @@ namespace ValhallaVaultCyberAwareness.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<CategoryModel>> UpdateCategory(CategoryModel updatedCategory)
+        public async Task<ActionResult<CategoryModel>> UpdateCategory(CategoryModel category)
         {
+            var updatedCategory = await _uow.CategoryRepo.UpdateCategory(category);
+
             if (updatedCategory != null)
             {
-                await _uow.CategoryRepo.UpdateCategory(updatedCategory);
                 return Ok(updatedCategory);
             }
             return NotFound();
