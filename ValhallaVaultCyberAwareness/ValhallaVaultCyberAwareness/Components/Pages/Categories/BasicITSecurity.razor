@@ -1,30 +1,226 @@
-﻿@page "/GrundläggandeIT-säkerhet"
+﻿ @page "/GrundläggandeIT-säkerhet"
+    @using ValhallaVaultCyberAwareness.Data
+    @using ValhallaVaultCyberAwareness.Data.Models
+    @using ValhallaVaultCyberAwareness.Repositories
+    @inject SegmentRepository SegmentRepo
+    @inject CategoryRepository CategoryRepo
+
 
 <h3>Welcome to Basic IT Security 101! </h3>
+
 
 <p>
 Here you will learn about the different types of basic IT security measures you can take to protect yourself.
     <br/>
 </p>
 
+<h3>
+    What Is Information Security?
+</h3>
+
+<style>
+    h3 {
+        font-weight: bold;
+    }
+</style>
+
 <p>
-    INFO
+
+
+    Information security often referred to as cybersecurity or IT security, is the process of securing electronic data against harm.
+
     <br/>
+    Some information risks are unauthorized access, usage, disclosure, interception, and data loss
+
+    <br/> 
+    Business and individual users’ confidential information is included in this definition
+<h3>
+    Fundamental Principles of Information Security
+</h3>
+
+    <style>
+        h3 {
+            font-weight: bold;
+        }
+    </style>
+
 </p>
-    INFO
+    Information security is important because it helps to protect information from being accessed by unauthorized individuals.
+
     <br/>
+    <br/>
+    There are four main principles of information security: 
+
+
+    <br/>
+    confidentiality, integrity, availability, and non-repudiation.
+
+    <br/>
+    <br/>
+    Confidentiality refers to the secrecy surrounding information. 
+    
+
+    <br/>
+    Only authorized individuals should be able to access confidential information.
+
+    <br/>
+    <br/>
+    Integrity means that data cannot be altered without authorization.
+
+    <br/>
+    <br/>
+    Availability ensures authorized users have access to the data when needed.
+
+    <br/>
+    <br/>  
+    Non-repudiation prevents someone from denying that they took action, such as sending an email.
+
 <p/>
 
-<p>
-    INFO
-    <br/>
-</p>
+
+<h3>
+    Information Security Controls
+</h3>
+
+<style>
+    h3 {
+        font-weight: bold;
+    }
+</style>
 
 <p>
-    INFO
-    <br/>
+ 
+    Information security controls are safeguards or countermeasures used to protect electronic information systems and data from unauthorized access, use, disclosure, disruption, modification, or destruction.
+  
+    <br />
+    Information security controls can be classified into three main categories:
+    administrative controls, physical controls, and technical controls.
+
+    <br />
+    <br />
+    Administrative controls are procedures and policies that help secure information systems and data.
+
+    <br />
+    They include specifying who is allowed for having access to which systems and data,
+    establishing security clearance levels,
+    assigning responsibility for information security,
+    developing awareness and training programs,
+    conducting risk assessments, and creating incident response plans.
+
+    <br />
+    <br />
+    Physical controls are designed to protect information systems and data from physical threats such as fire, flooding, power outages, temperature extremes, tampering, and theft. 
+
+    <br />
+    Examples of physical controls are installing firewalls and intrusion detection systems, using physical security devices such as locks and alarms, and establishing environmental controls.
+
+    <br />
+    <br />
+    Technical controls protect information systems and data from logical or cyber threats. 
+
+    <br />
+    They include measures such as creating user accounts and passwords, encrypting data, implementing access control lists, and auditing system activity.
+
 </p>
 
+<h3>
+    The Fundamentals of Cybersecurity
+</h3>
 
-@code {
+<style>
+    h3 {
+        font-weight: bold;
+    }
+</style>
+
+<p>
+    As our dependence on technology increases, so does our vulnerability to cyberattacks.
+
+    <br />
+    Cybersecurity is, therefore, more important than ever before, and it’s something that everyone should be aware of.
+
+    <br />
+    <br />
+    So, what exactly is cybersecurity? 
+
+    <br />
+    In short, it protects your devices and online accounts from unauthorized access or theft. 
+
+    <br />
+    This includes ensuring your passwords are strong and unique, using two-factor authentication where possible, and being cautious about the links and attachments you click on.
+
+    <br />
+    <br />
+    Why is cybersecurity important? 
+
+    <br/>
+    Because data is of prime importance in today’s date and age. 
+
+    <br />
+    A cyberattack can result in the loss of sensitive data, financial damage, and even physical harm. 
+
+    <br />
+    In fact, cybercrime is now one of the most serious threats facing businesses and individuals alike.
+
+    <br />
+    <br />
+    Fortunately, you can take some simple steps to protect yourself from becoming a cyberattack victim.
+
+    <br />
+    These include keeping your software and operating system up to date, using strong passwords, and being careful about the links and attachments you click on.
+
+    <br />
+    By following these simple tips, you can help keep yourself safe from the growing threat of cybercrime.
+
+    <br />
+    <br />
+    Information security is a fundamental piece of online safety.
+
+    <br />
+    Understanding the basics of information security can help protect yourself and your customers from harm.
+</p>
+
+@if (Segments != null)
+{
+    <h3>Segments in this category:</h3>
+    <ul>
+        @foreach (var segment in Segments)
+        {
+            <li>
+                @segment.SegmentName
+                <ul>
+                    @foreach (var subCategory in segment.SubCategory)
+                    {
+                        <li>@subCategory.SubCategoryName - @(subCategory.IsCompleted ? "Completed" : "Not Completed")</li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
 }
+
+@if (IsCategoryCompleted())
+{
+    <h3>This category is completed!</h3>
+}
+else
+{
+    <h3>This category is not yet completed.</h3>
+}
+
+@code{
+        private List<SegmentModel> Segments { get; set; }
+        private CategoryModel Category { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            Category = await CategoryRepo.GetCategoryById(1); // Assuming the category id for Basic IT Security is 1
+            Segments = await SegmentRepo.GetAllSegments();
+        }
+
+        private bool IsCategoryCompleted()
+        {
+            return Segments?.All(s => s.SubCategory.All(sc => sc.IsCompleted)) ?? false;
+        }
+    }
+

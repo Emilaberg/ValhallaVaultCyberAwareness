@@ -1,7 +1,12 @@
 ﻿
 @using Microsoft.EntityFrameworkCore
+@using static ValhallaVaultCyberAwareness.Components.Pages.Home
+@* @using static ValhallaVaultCyberAwareness.Repositories.IValhallaUow *@
+@using ValhallaVaultCyberAwareness.Data
+@* @inject IValhallaUow Uow *@
 @rendermode InteractiveServer
 @attribute [StreamRendering]
+@inject MyProgressService ProgressService
 @inject NavigationManager NavigationManager
 
 <ul>
