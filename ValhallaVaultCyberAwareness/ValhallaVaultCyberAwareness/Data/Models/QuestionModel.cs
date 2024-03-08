@@ -18,7 +18,7 @@ namespace ValhallaVaultCyberAwareness.Data.Models
         public SubCategoryModel SubCategory { get; set; } = null!;
 
         //relationen till prompts
-        public List<PromptModel> Promps { get; set; } = [];
+        public List<PromptModel> Prompts { get; set; } = [];
 
         //many to many relationship
         public List<ApplicationUser> ApplicationUsers { get; } = [];

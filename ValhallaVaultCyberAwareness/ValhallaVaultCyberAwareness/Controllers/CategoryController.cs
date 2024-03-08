@@ -9,18 +9,18 @@ namespace ValhallaVaultCyberAwareness.Controllers
     public class CategoryController : ControllerBase
     {
 
-        private readonly ValhallaUow _uow;
-
-        public CategoryController(ValhallaUow uow)
+        private readonly IValhallaUow _uow;
+        public CategoryController(IValhallaUow uow)
         {
-            _uow = uow;
 
+            _uow = uow;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<CategoryModel>>> GetAllCategories()
         {
             var categories = await _uow.CategoryRepo.GetAllCategories();
+
             if (categories != null)
             {
                 return Ok(categories);
@@ -69,11 +69,12 @@ namespace ValhallaVaultCyberAwareness.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<CategoryModel>> UpdateCategory(CategoryModel updatedCategory)
+        public async Task<ActionResult<CategoryModel>> UpdateCategory(CategoryModel category)
         {
+            var updatedCategory = await _uow.CategoryRepo.UpdateCategory(category);
+
             if (updatedCategory != null)
             {
-                await _uow.CategoryRepo.UpdateCategory(updatedCategory);
                 return Ok(updatedCategory);
             }
             return NotFound();
