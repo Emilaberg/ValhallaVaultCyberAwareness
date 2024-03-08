@@ -5,6 +5,7 @@ using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
 using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Managers;
+using ValhallaVaultCyberAwareness.Data.Middleware;
 using ValhallaVaultCyberAwareness.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -90,5 +91,6 @@ app.MapAdditionalIdentityEndpoints();
 app.MapControllers();
 
 app.UseCors("AllowAll");
+app.UseMiddleware<IpLoggerMiddleware>();
 
 app.Run();
