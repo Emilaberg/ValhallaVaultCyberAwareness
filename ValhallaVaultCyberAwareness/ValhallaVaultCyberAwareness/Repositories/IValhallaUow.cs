@@ -2,15 +2,12 @@
 {
     public interface IValhallaUow
     {
-        public interface IValhallaUow
-        {
-            CategoryRepository CategoryRepo { get; }
-            SegmentRepository SegmentRepo { get; }
-            SubCategoryRepository SubCategoryRepo { get; }
-            QuestionRepository QuestionRepo { get; }
-            PromptRepository PromptRepo { get; }
+        CategoryRepository CategoryRepo { get; }
+        SegmentRepository SegmentRepo { get; }
+        SubCategoryRepository SubCategoryRepo { get; }
+        QuestionRepository QuestionRepo { get; }
+        PromptRepository PromptRepo { get; }
 
-            Task CompleteAsync();
-        }
+        Task CompleteAsync();
     }
 }
