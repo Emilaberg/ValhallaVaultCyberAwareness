@@ -67,7 +67,13 @@ namespace ValhallaVaultCyberAwareness.Repositories
             }
             throw new NullReferenceException();
         }
-
+        //hämtar alla questions med subCategoryId 
+        public async Task<List<QuestionModel>> GetQuestionBySubCategory(int subCategoryId)
+        {
+            return await _context.Questions
+               .Where(sc => sc.SubCategoryId == subCategoryId)
+               .ToListAsync();
+        }
 
     }
 }

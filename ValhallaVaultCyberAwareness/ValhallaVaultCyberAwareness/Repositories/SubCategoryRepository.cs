@@ -67,6 +67,13 @@ namespace ValhallaVaultCyberAwareness.Repositories
             }
             throw new NullReferenceException();
         }
+        //hämtar alla subkategorier med CategoryId och SegmentId 
+        public async Task<List<SubCategoryModel>> GetSubcategoriesInSegmentForCategory(int categoryId, int segmentId)
+        {
+            return await _context.SubCategories
+                .Where(s => s.SegmentId == segmentId && s.Segment.CategoryId == categoryId)
+                .ToListAsync();
+        }
 
 
     }

@@ -67,6 +67,8 @@ namespace ValhallaVaultCyberAwareness.Repositories
             throw new NullReferenceException();
         }
 
+        public async Task<SegmentModel> Get
+
 
     }
 }

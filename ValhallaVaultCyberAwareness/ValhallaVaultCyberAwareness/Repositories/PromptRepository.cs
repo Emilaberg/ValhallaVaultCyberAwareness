@@ -68,6 +68,18 @@ namespace ValhallaVaultCyberAwareness.Repositories
             throw new NullReferenceException();
         }
 
+        //hämtar alla prompts med questionId 
+        public async Task<List<PromptModel>> GetPromptByQuestion(int questionId)
+        {
+            var prompts = await _context.Prompts
+               .Where(sc => sc.QuestionId == questionId)
+               .ToListAsync();
+            if (prompts != null)
+            {
+                return prompts;
+            }
+            throw new NullReferenceException();
+        }
 
     }
 }
