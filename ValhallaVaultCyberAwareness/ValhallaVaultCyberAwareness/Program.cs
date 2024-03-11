@@ -26,6 +26,7 @@ builder.Services.AddScoped<SegmentRepository>();
 builder.Services.AddScoped<SubCategoryRepository>();
 builder.Services.AddScoped<QuestionRepository>();
 builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<PromptRepository>();
 
 
 

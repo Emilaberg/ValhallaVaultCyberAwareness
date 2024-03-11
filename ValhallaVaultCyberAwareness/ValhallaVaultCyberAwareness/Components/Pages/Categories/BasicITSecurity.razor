@@ -199,7 +199,7 @@ Here you will learn about the different types of basic IT security measures you 
     </ul>
 }
 
-@if (IsCategoryCompleted())
+@* @if (IsCategoryCompleted())
 {
     <h3>This category is completed!</h3>
 }
@@ -207,7 +207,7 @@ else
 {
     <h3>This category is not yet completed.</h3>
 }
-
+ *@
 @code{
         private List<SegmentModel> Segments { get; set; }
         private CategoryModel Category { get; set; }
@@ -218,9 +218,13 @@ else
             Segments = await SegmentRepo.GetAllSegments();
         }
 
-        private bool IsCategoryCompleted()
-        {
-            return Segments?.All(s => s.SubCategory.All(sc => sc.IsCompleted)) ?? false;
-        }
+        // private bool IsCategoryCompleted()
+        // {
+        // int totalQuestions = Segments?.Sum(s => s.SubCategory.Sum(sc => sc.GetQuestionsByCategoryId)) ?? 0;
+        // int totalCorrectAnswers = Segments?.Sum(s => s.SubCategory.Sum(sc => sc.CorrectAnswers)) ?? 0;
+
+        // return totalQuestions > 0 && ((double)totalCorrectAnswers / totalQuestions) >= 0.8;
+        // }
     }
 
+        
