@@ -11,5 +11,13 @@ namespace ValhallaVaultCyberAwareness.Data
         public DbSet<SubCategoryModel> SubCategories { get; set; }
         public DbSet<QuestionModel> Questions { get; set; }
         public DbSet<PromptModel> Prompts { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ApplicationUserQuestionModel>().HasKey(e => new { e.ApplicationUserId, e.QuestionModelId });
+        }
     }
 }
