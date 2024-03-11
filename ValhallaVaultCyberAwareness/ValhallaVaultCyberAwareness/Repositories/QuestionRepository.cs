@@ -22,50 +22,42 @@ namespace ValhallaVaultCyberAwareness.Repositories
         {
             var singleQuestion = await _context.Questions.FirstOrDefaultAsync(c => c.Id == id);
 
-            if (singleQuestion != null)
-            {
-                return singleQuestion;
-            }
-            throw new NullReferenceException();
+
+            return singleQuestion;
+
         }
         public async Task<QuestionModel> AddQuestion(QuestionModel newQuestion)
         {
-            if (newQuestion != null)
-            {
-                _context.Add(newQuestion);
-                await _context.SaveChangesAsync();
 
-                return newQuestion;
-            }
-            throw new NullReferenceException();
+            _context.Add(newQuestion);
+            await _context.SaveChangesAsync();
+
+            return newQuestion;
+
         }
 
         public async Task<QuestionModel> DeleteQuestion(int id)
         {
             var QuestionToDelete = await _context.Questions.FirstOrDefaultAsync(c => c.Id == id);
 
-            if (QuestionToDelete != null)
-            {
-                _context.Questions.Remove(QuestionToDelete);
 
-                await _context.SaveChangesAsync();
-                return QuestionToDelete;
-            }
-            throw new NullReferenceException();
+            _context.Questions.Remove(QuestionToDelete);
+
+            await _context.SaveChangesAsync();
+            return QuestionToDelete;
+
         }
         public async Task<QuestionModel> UpdateQuestion(QuestionModel updatedQuestion)
         {
             var QuestionToUpdate = await _context.Questions.FirstOrDefaultAsync(c => c.Id == updatedQuestion.Id);
 
-            if (QuestionToUpdate != null)
-            {
-                QuestionToUpdate.Question = updatedQuestion.Question;
-                QuestionToUpdate.Explaination = updatedQuestion.Explaination;
 
-                await _context.SaveChangesAsync();
-                return updatedQuestion;
-            }
-            throw new NullReferenceException();
+            QuestionToUpdate.Question = updatedQuestion.Question;
+            QuestionToUpdate.Explaination = updatedQuestion.Explaination;
+
+            await _context.SaveChangesAsync();
+            return updatedQuestion;
+
         }
         //hämtar alla questions med subCategoryId 
         public async Task<List<QuestionModel>> GetQuestionBySubCategory(int subCategoryId)

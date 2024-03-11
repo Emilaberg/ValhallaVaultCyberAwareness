@@ -13,65 +13,55 @@ namespace ValhallaVaultCyberAwareness.Repositories
         }
         public async Task<List<SubCategoryModel>> GetAllSubCategories()
         {
-            var SubCategories = await _context.SubCategories.ToListAsync();
+            return await _context.SubCategories.ToListAsync();
 
-            return SubCategories;
 
         }
         public async Task<SubCategoryModel> GetSubCategoryById(int id)
         {
             var singleSubCategory = await _context.SubCategories.FirstOrDefaultAsync(c => c.Id == id);
 
-            if (singleSubCategory != null)
-            {
-                return singleSubCategory;
-            }
-            throw new NullReferenceException();
+            return singleSubCategory;
         }
         public async Task<SubCategoryModel> AddSubCategory(SubCategoryModel newSubCategory)
         {
-            if (newSubCategory != null)
-            {
-                _context.Add(newSubCategory);
-                await _context.SaveChangesAsync();
 
-                return newSubCategory;
-            }
-            throw new NullReferenceException();
+            _context.Add(newSubCategory);
+            await _context.SaveChangesAsync();
+
+            return newSubCategory;
+
         }
 
         public async Task<SubCategoryModel> DeleteSubCategory(int id)
         {
             var SubCategoryToDelete = await _context.SubCategories.FirstOrDefaultAsync(c => c.Id == id);
 
-            if (SubCategoryToDelete != null)
-            {
-                _context.SubCategories.Remove(SubCategoryToDelete);
+            _context.SubCategories.Remove(SubCategoryToDelete);
 
-                await _context.SaveChangesAsync();
-                return SubCategoryToDelete;
-            }
-            throw new NullReferenceException();
+            await _context.SaveChangesAsync();
+            return SubCategoryToDelete;
+
+
         }
         public async Task<SubCategoryModel> UpdateSubCategory(SubCategoryModel updatedSubCategory)
         {
             var SubCategoryToUpdate = await _context.SubCategories.FirstOrDefaultAsync(c => c.Id == updatedSubCategory.Id);
 
-            if (SubCategoryToUpdate != null)
-            {
-                SubCategoryToUpdate.SubCategoryName = updatedSubCategory.SubCategoryName;
-                SubCategoryToUpdate.IsCompleted = updatedSubCategory.IsCompleted;
 
-                await _context.SaveChangesAsync();
-                return updatedSubCategory;
-            }
-            throw new NullReferenceException();
+            SubCategoryToUpdate.SubCategoryName = updatedSubCategory.SubCategoryName;
+            SubCategoryToUpdate.IsCompleted = updatedSubCategory.IsCompleted;
+
+            await _context.SaveChangesAsync();
+            return updatedSubCategory;
+
         }
-        //hämtar alla subkategorier med CategoryId och SegmentId 
-        public async Task<List<SubCategoryModel>> GetSubcategoriesInSegmentForCategory(int categoryId, int segmentId)
+
+        //hämtar alla subkategorier med SegmentId 
+        public async Task<List<SubCategoryModel>> GetSubcategoriesBySegment(int segmentId)
         {
             return await _context.SubCategories
-                .Where(s => s.SegmentId == segmentId && s.Segment.CategoryId == categoryId)
+                .Where(sc => sc.SegmentId == segmentId)
                 .ToListAsync();
         }
 
