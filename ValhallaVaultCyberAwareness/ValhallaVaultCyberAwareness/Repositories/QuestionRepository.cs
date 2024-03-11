@@ -60,6 +60,7 @@ namespace ValhallaVaultCyberAwareness.Repositories
             if (QuestionToUpdate != null)
             {
                 QuestionToUpdate.Question = updatedQuestion.Question;
+                QuestionToUpdate.Explaination = updatedQuestion.Explaination;
 
                 await _context.SaveChangesAsync();
                 return updatedQuestion;

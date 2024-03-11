@@ -68,7 +68,8 @@ namespace ValhallaVaultCyberAwareness.Repositories
 
             if (PromptToUpdate != null)
             {
-                PromptToUpdate.Question = updatedPrompt.Question;
+                PromptToUpdate.Prompt = updatedPrompt.Prompt;
+                PromptToUpdate.IsCorrect = updatedPrompt.IsCorrect;
 
                 await _context.SaveChangesAsync();
                 return updatedPrompt;

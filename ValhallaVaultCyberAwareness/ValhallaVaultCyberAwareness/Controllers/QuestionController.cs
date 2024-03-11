@@ -8,14 +8,17 @@ namespace ValhallaVaultCyberAwareness.Controllers
     [ApiController]
     public class QuestionController : ControllerBase
     {
-        private readonly ValhallaUow _uow;
+        private readonly IValhallaUow _uow;
 
 
-        public QuestionController(ValhallaUow uow)
+
+        public QuestionController(IValhallaUow uow)
         {
+
             _uow = uow;
 
         }
+
         [HttpGet]
         public async Task<ActionResult<List<QuestionModel>>> GetAllquestion()
         {
@@ -68,11 +71,12 @@ namespace ValhallaVaultCyberAwareness.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<QuestionModel>> Updatequestion(QuestionModel updatedquestion)
+        public async Task<ActionResult<QuestionModel>> Updatequestion(QuestionModel question)
         {
+            var updatedquestion = await _uow.QuestionRepo.UpdateQuestion(question);
+
             if (updatedquestion != null)
             {
-                await _uow.QuestionRepo.UpdateQuestion(updatedquestion);
                 return Ok(updatedquestion);
             }
             return NotFound();
