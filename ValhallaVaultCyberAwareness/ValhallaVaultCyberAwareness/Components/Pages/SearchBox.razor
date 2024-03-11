@@ -1,0 +1,62 @@
+﻿
+@using Microsoft.EntityFrameworkCore
+@using static ValhallaVaultCyberAwareness.Components.Pages.Home
+@* @using static ValhallaVaultCyberAwareness.Repositories.IValhallaUow *@
+@using ValhallaVaultCyberAwareness.Data
+@* @inject IValhallaUow Uow *@
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject MyProgressService ProgressService
+@inject NavigationManager NavigationManager
+
+<ul>
+    @foreach (var item in Items)
+    {
+        var route = item.Replace(" ", "");
+        <li><a href="@($"/{route}")">@item</a></li>
+    }
+</ul>
+
+<div class="row">
+    <div class="col-auto">
+        <button class="btn btn-primary" @onclick="NavigateToCategories">Go To</button>
+    </div>
+    <div class="col">
+        <input list="items" type="text" class="form-control" placeholder="Which category would you like to read about?" @bind="Search" @oninput="UpdateSelectedItem" />
+    </div>
+</div>
+
+<datalist id="items">
+    @foreach (var item in FilteredItems)
+    {
+        <option value="@item"></option>
+    }
+</datalist>
+
+@code {
+    private string? Search { get; set; }
+    private List<string> Items { get; set; } = new List<string> { "Grundläggande IT-säkerhet", "Att skydda sig mot bedrägerier", "Cybersäkerhet för företag", "Cyberspionage" };
+    private string? SelectedItem { get; set; }
+
+    private List<string> FilteredItems
+    {
+        get
+        {
+            return string.IsNullOrWhiteSpace(Search) ? Items : Items.Where(item => item.Contains(Search)).ToList();
+        }
+    }
+
+    private void UpdateSelectedItem(ChangeEventArgs e)
+    {
+        SelectedItem = e.Value?.ToString();
+    }
+
+    private void NavigateToCategories()
+    {
+        if (!string.IsNullOrEmpty(SelectedItem))
+        {
+            var route = SelectedItem.Replace(" ", "");
+            NavigationManager.NavigateTo($"/{route}");
+        }
+    }
+}

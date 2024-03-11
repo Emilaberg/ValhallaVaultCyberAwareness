@@ -28,6 +28,15 @@ namespace ValhallaVaultCyberAwareness.Repositories
             }
             throw new NullReferenceException();
         }
+
+        public async Task<List<PromptModel>> GetPromptsForQuestion(int questionId)
+        {
+            return await _context.Prompts
+                .Where(p => p.QuestionId == questionId)
+                .ToListAsync();
+        }
+
+
         public async Task<PromptModel> AddPrompt(PromptModel newPrompt)
         {
             if (newPrompt != null)
