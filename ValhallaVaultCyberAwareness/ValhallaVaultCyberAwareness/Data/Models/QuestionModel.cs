@@ -21,7 +21,7 @@ namespace ValhallaVaultCyberAwareness.Data.Models
         public List<PromptModel> Prompts { get; set; } = [];
 
         //many to many relationship
-        public List<ApplicationUser> ApplicationUsers { get; } = [];
-
+        //public List<ApplicationUser> ApplicationUsers { get; } = [];
+        public List<ApplicationUserQuestionModel> UsersAnsweredQuestions { get; set; } = [];
     }
 }

@@ -6,6 +6,8 @@ using ValhallaVaultCyberAwareness.Components.Account;
 using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Managers;
 using ValhallaVaultCyberAwareness.Repositories;
+using static ValhallaVaultCyberAwareness.Components.Pages.Home;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,13 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddScoped<IValhallaUow, ValhallaUow>();
+builder.Services.AddScoped<MyProgressService>();
+builder.Services.AddScoped<SegmentRepository>();
+builder.Services.AddScoped<SubCategoryRepository>();
+builder.Services.AddScoped<QuestionRepository>();
+builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<PromptRepository>();
+
 
 
 
