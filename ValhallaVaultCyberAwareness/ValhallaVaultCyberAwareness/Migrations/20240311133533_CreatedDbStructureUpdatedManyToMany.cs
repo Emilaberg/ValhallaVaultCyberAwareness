@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ValhallaVaultCyberAwareness.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateDbStructure : Migration
+    public partial class CreatedDbStructureUpdatedManyToMany : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -235,21 +235,22 @@ namespace ValhallaVaultCyberAwareness.Migrations
                 name: "ApplicationUserQuestionModel",
                 columns: table => new
                 {
-                    AnsweredQuestionsId = table.Column<int>(type: "int", nullable: false),
-                    ApplicationUsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    QuestionModelId = table.Column<int>(type: "int", nullable: false),
+                    IsCorrectlyAnswered = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ApplicationUserQuestionModel", x => new { x.AnsweredQuestionsId, x.ApplicationUsersId });
+                    table.PrimaryKey("PK_ApplicationUserQuestionModel", x => new { x.ApplicationUserId, x.QuestionModelId });
                     table.ForeignKey(
-                        name: "FK_ApplicationUserQuestionModel_AspNetUsers_ApplicationUsersId",
-                        column: x => x.ApplicationUsersId,
+                        name: "FK_ApplicationUserQuestionModel_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ApplicationUserQuestionModel_Questions_AnsweredQuestionsId",
-                        column: x => x.AnsweredQuestionsId,
+                        name: "FK_ApplicationUserQuestionModel_Questions_QuestionModelId",
+                        column: x => x.QuestionModelId,
                         principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -277,9 +278,9 @@ namespace ValhallaVaultCyberAwareness.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ApplicationUserQuestionModel_ApplicationUsersId",
+                name: "IX_ApplicationUserQuestionModel_QuestionModelId",
                 table: "ApplicationUserQuestionModel",
-                column: "ApplicationUsersId");
+                column: "QuestionModelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
