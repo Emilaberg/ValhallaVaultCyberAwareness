@@ -12,22 +12,21 @@ namespace ValhallaVaultCyberAwareness.Repositories
         {
             _context = context;
         }
-        public async Task<List<CategoryModel>> GetAllCategories()
+        public async Task<List<CategoryModel>?> GetAllCategories()
         {
             var categories = await _context.Categories.ToListAsync();
 
             return categories;
 
         }
-        public async Task<CategoryModel> GetCategoryById(int id)
+        public async Task<CategoryModel?> GetCategoryById(int id)
         {
             var singleCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
-            i
-                return singleCategory;
+            return singleCategory;
 
         }
-        public async Task<CategoryModel> AddCategory(CategoryModel newCategory)
+        public async Task<CategoryModel?> AddCategory(CategoryModel newCategory)
         {
 
             _context.Add(newCategory);
@@ -37,10 +36,9 @@ namespace ValhallaVaultCyberAwareness.Repositories
 
         }
 
-        public async Task<CategoryModel> DeleteCategory(int id)
+        public async Task<CategoryModel?> DeleteCategory(int id)
         {
             var categoryToDelete = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
-
 
             _context.Categories.Remove(categoryToDelete);
 
@@ -48,7 +46,7 @@ namespace ValhallaVaultCyberAwareness.Repositories
             return categoryToDelete;
 
         }
-        public async Task<CategoryModel> UpdateCategory(CategoryModel updatedCategory)
+        public async Task<CategoryModel?> UpdateCategory(CategoryModel updatedCategory)
         {
             var categoryToUpdate = await _context.Categories.FirstOrDefaultAsync(c => c.Id == updatedCategory.Id);
 
@@ -61,7 +59,7 @@ namespace ValhallaVaultCyberAwareness.Repositories
         }
 
         //Get all categorys whith segments and subcategories
-        public async Task<List<CategoryModel>> GetAllCategoriesWithSegmentsAndSubCategories()
+        public async Task<List<CategoryModel>?> GetAllCategoriesWithSegmentsAndSubCategories()
         {
             return await _context.Categories
                 .Include(category => category.Segments)

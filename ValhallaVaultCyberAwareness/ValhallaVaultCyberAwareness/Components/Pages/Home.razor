@@ -4,7 +4,7 @@
 @rendermode InteractiveServer
 @attribute [StreamRendering]
 @inject NavigationManager NavigationManager
-@inject MyProgressService ProgressService
+@* @inject MyProgressService ProgressService *@
 @* @inject IValhallaUow Uow *@
 @using ValhallaVaultCyberAwareness.Components.Pages
 @using ValhallaVaultCyberAwareness.Data
@@ -33,45 +33,45 @@
 @code{
     private Dictionary<string, double>? userProgress;
 
-    protected override async Task OnInitializedAsync()
-    {
-        var userId = "YourUserId"; // Replace with actual user id
-        userProgress = await ProgressService.GetUserProgress(userId);
-    }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     var userId = "YourUserId"; // Replace with actual user id
+    //     userProgress = await ProgressService.GetUserProgress(userId);
+    // }
 
-    public class MyProgressService
-    {
-        private readonly ApplicationDbContext _context;
+    // public class MyProgressService
+    // {
+    //     private readonly ApplicationDbContext _context;
 
-        public MyProgressService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+    //     public MyProgressService(ApplicationDbContext context)
+    //     {
+    //         _context = context;
+    //     }
 
-        public async Task<Dictionary<string, double>> GetUserProgress(string userId)
-        {
-            var progress = new Dictionary<string, double>();
+    //     public async Task<Dictionary<string, double>> GetUserProgress(string userId)
+    //     {
+    //         var progress = new Dictionary<string, double>();
 
-            var categories = await _context.SubCategories.ToListAsync();
+    //         var categories = await _context.SubCategories.ToListAsync();
 
-            foreach (var category in categories)
-            {
-                var totalQuestions = await _context.Questions
-                    .Where(q => q.SubCategoryId == category.Id)
-                    .CountAsync();
+    //         foreach (var category in categories)
+    //         {
+    //             var totalQuestions = await _context.Questions
+    //                 .Where(q => q.SubCategoryId == category.Id)
+    //                 .CountAsync();
 
-                var answeredQuestions = await _context.Questions
-                    .Where(q => q.SubCategoryId == category.Id && q.ApplicationUsers.Any(u => u.Id == userId))
-                    .CountAsync();
+    //             var answeredQuestions = await _context.Questions
+    //                 .Where(q => q.SubCategoryId == category.Id && q.ApplicationUsers.Any(u => u.Id == userId))
+    //                 .CountAsync();
 
-                if (totalQuestions > 0)
-                {
-                    var progressPercentage = (double)answeredQuestions / totalQuestions * 100;
-                    progress.Add(category.SubCategoryName ?? string.Empty, progressPercentage);
-                }
-            }
+    //             if (totalQuestions > 0)
+    //             {
+    //                 var progressPercentage = (double)answeredQuestions / totalQuestions * 100;
+    //                 progress.Add(category.SubCategoryName ?? string.Empty, progressPercentage);
+    //             }
+    //         }
 
-            return progress;
-        }
-    }
+    //         return progress;
+    //     }
+    // }
 }
