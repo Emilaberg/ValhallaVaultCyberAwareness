@@ -16,10 +16,13 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddControllers();
+
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
+
 builder.Services.AddScoped<IValhallaUow, ValhallaUow>();
 builder.Services.AddScoped<MyProgressService>();
 builder.Services.AddScoped<SegmentRepository>();
@@ -27,6 +30,8 @@ builder.Services.AddScoped<SubCategoryRepository>();
 builder.Services.AddScoped<QuestionRepository>();
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<PromptRepository>();
+
+
 
 
 
@@ -52,6 +57,16 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin();
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -80,5 +95,9 @@ app.MapRazorComponents<App>()
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
+app.MapControllers();
+
+app.UseCors("AllowAll");
 
 app.Run();

@@ -60,6 +60,7 @@ namespace ValhallaVaultCyberAwareness.Repositories
             if (SubCategoryToUpdate != null)
             {
                 SubCategoryToUpdate.SubCategoryName = updatedSubCategory.SubCategoryName;
+                SubCategoryToUpdate.IsCompleted = updatedSubCategory.IsCompleted;
 
                 await _context.SaveChangesAsync();
                 return updatedSubCategory;

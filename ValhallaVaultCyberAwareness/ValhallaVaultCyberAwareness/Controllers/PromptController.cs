@@ -8,12 +8,14 @@ namespace ValhallaVaultCyberAwareness.Controllers
     [ApiController]
     public class PromptController : ControllerBase
     {
-        private readonly ValhallaUow _uow;
 
+        private readonly IValhallaUow _uow;
 
-        public PromptController(ValhallaUow uow)
+        public PromptController(IValhallaUow uow)
         {
+
             _uow = uow;
+
         }
 
         [HttpGet]
@@ -68,11 +70,12 @@ namespace ValhallaVaultCyberAwareness.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<PromptModel>> UpdatePrompt(PromptModel updatedPrompt)
+        public async Task<ActionResult<PromptModel>> UpdatePrompt(PromptModel Prompt)
         {
+            var updatedPrompt = await _uow.PromptRepo.UpdatePrompt(Prompt);
+
             if (updatedPrompt != null)
             {
-                await _uow.PromptRepo.UpdatePrompt(updatedPrompt);
                 return Ok(updatedPrompt);
             }
             return NotFound();

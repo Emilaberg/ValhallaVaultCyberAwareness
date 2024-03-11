@@ -9,11 +9,12 @@ namespace ValhallaVaultCyberAwareness.Controllers
     public class SegmentController : ControllerBase
     {
 
-        private readonly ValhallaUow _uow;
+        private readonly IValhallaUow _uow;
 
 
-        public SegmentController(ValhallaUow uow)
+        public SegmentController(IValhallaUow uow)
         {
+
             _uow = uow;
 
         }
@@ -70,11 +71,12 @@ namespace ValhallaVaultCyberAwareness.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<SegmentModel>> UpdateSegment(SegmentModel updatedSegment)
+        public async Task<ActionResult<SegmentModel>> UpdateSegment(SegmentModel segment)
         {
+            var updatedSegment = await _uow.SegmentRepo.UpdateSegment(segment);
+
             if (updatedSegment != null)
             {
-                await _uow.SegmentRepo.UpdateSegment(updatedSegment);
                 return Ok(updatedSegment);
             }
             return NotFound();
