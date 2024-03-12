@@ -52,6 +52,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     //lägg in era options här för max login attempts, olika password requirements etc.
     options.SignIn.RequireConfirmedAccount = true;
 })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
@@ -67,6 +68,15 @@ builder.Services.AddCors(options =>
         policy.AllowAnyMethod();
     });
 });
+//Adding admin role and admin user
+
+using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
+{
+    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    new RoleManager(signInManager, roleManager).InitialAdminAccount();
+}
 
 var app = builder.Build();
 
