@@ -7,6 +7,8 @@ using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Managers;
 using ValhallaVaultCyberAwareness.Data.Middleware;
 using ValhallaVaultCyberAwareness.Repositories;
+//using static ValhallaVaultCyberAwareness.Components.Pages.Home;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,13 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddScoped<IValhallaUow, ValhallaUow>();
+//builder.Services.AddScoped<MyProgressService>();
+builder.Services.AddScoped<SegmentRepository>();
+builder.Services.AddScoped<SubCategoryRepository>();
+builder.Services.AddScoped<QuestionRepository>();
+builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<PromptRepository>();
+
 
 
 
@@ -44,6 +53,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     //lägg in era options här för max login attempts, olika password requirements etc.
     options.SignIn.RequireConfirmedAccount = true;
 })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
@@ -59,6 +69,15 @@ builder.Services.AddCors(options =>
         policy.AllowAnyMethod();
     });
 });
+//Adding admin role and admin user
+
+using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
+{
+    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    new RoleManager(signInManager, roleManager).InitialAdminAccount();
+}
 
 var app = builder.Build();
 

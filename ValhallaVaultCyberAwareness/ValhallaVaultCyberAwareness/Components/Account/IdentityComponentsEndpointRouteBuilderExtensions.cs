@@ -13,7 +13,7 @@ namespace Microsoft.AspNetCore.Routing
         public static IEndpointConventionBuilder MapAdditionalIdentityEndpoints(this IEndpointRouteBuilder endpoints)
         {
             ArgumentNullException.ThrowIfNull(endpoints);
-
+            //endpoints.MapGroup("/Admin");
             var accountGroup = endpoints.MapGroup("/Account");
 
             accountGroup.MapPost("/Logout", async (

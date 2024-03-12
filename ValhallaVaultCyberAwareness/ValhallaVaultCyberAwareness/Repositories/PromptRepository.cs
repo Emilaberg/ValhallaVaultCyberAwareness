@@ -22,52 +22,57 @@ namespace ValhallaVaultCyberAwareness.Repositories
         {
             var singleprompt = await _context.Prompts.FirstOrDefaultAsync(c => c.Id == id);
 
-            if (singleprompt != null)
-            {
-                return singleprompt;
-            }
-            throw new NullReferenceException();
+
+            return singleprompt;
+
         }
+
+
+
         public async Task<PromptModel> AddPrompt(PromptModel newPrompt)
         {
-            if (newPrompt != null)
-            {
-                _context.Add(newPrompt);
-                await _context.SaveChangesAsync();
 
-                return newPrompt;
-            }
-            throw new NullReferenceException();
+            _context.Add(newPrompt);
+            await _context.SaveChangesAsync();
+
+            return newPrompt;
+
         }
 
         public async Task<PromptModel> DeletePrompt(int id)
         {
             var PromptToDelete = await _context.Prompts.FirstOrDefaultAsync(c => c.Id == id);
 
-            if (PromptToDelete != null)
-            {
-                _context.Prompts.Remove(PromptToDelete);
 
-                await _context.SaveChangesAsync();
-                return PromptToDelete;
-            }
-            throw new NullReferenceException();
+            _context.Prompts.Remove(PromptToDelete);
+
+            await _context.SaveChangesAsync();
+            return PromptToDelete;
+
         }
         public async Task<PromptModel> UpdatePrompt(PromptModel updatedPrompt)
         {
             var PromptToUpdate = await _context.Prompts.FirstOrDefaultAsync(c => c.Id == updatedPrompt.Id);
 
-            if (PromptToUpdate != null)
-            {
-                PromptToUpdate.Prompt = updatedPrompt.Prompt;
-                PromptToUpdate.IsCorrect = updatedPrompt.IsCorrect;
 
-                await _context.SaveChangesAsync();
-                return updatedPrompt;
-            }
-            throw new NullReferenceException();
+            PromptToUpdate.Prompt = updatedPrompt.Prompt;
+            PromptToUpdate.IsCorrect = updatedPrompt.IsCorrect;
+
+            await _context.SaveChangesAsync();
+            return updatedPrompt;
+
         }
 
+        //hämtar alla prompts med questionId 
+        public async Task<List<PromptModel>> GetPromptByQuestion(int questionId)
+        {
+            var prompts = await _context.Prompts
+               .Where(sc => sc.QuestionId == questionId)
+               .ToListAsync();
+
+            return prompts;
+
+        }
 
     }
 }

@@ -1,0 +1,56 @@
+﻿@page "/frageSida"
+@using ValhallaVaultCyberAwareness.Data.Models
+@using ValhallaVaultCyberAwareness.Repositories
+@inject QuestionRepository QuestionRepo
+@inject PromptRepository PromptRepo
+
+<h3>FrågeSida</h3>
+
+@if (question == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <form>
+        <h4>@question.Question</h4>
+        @foreach (var prompt in prompts)
+        {
+            <div>
+                <input type="radio" id="@prompt.Id" name="prompt" value="@prompt.Id" @onchange="HandleChange">
+                <label for="@prompt.Id">@prompt.Prompt</label>
+            </div>
+        }
+        <button type="submit" @onclick="CheckAnswer">Submit</button>
+    </form>
+    @if (isAnswered)
+    {
+        <p>The answer is @((isCorrect) ? "correct" : "incorrect")!</p>
+    }
+}
+
+@code {
+    private QuestionModel question;
+    private List<PromptModel> prompts;
+    private int selectedPromptId;
+    private bool isAnswered = false;
+    private bool isCorrect = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        question = await QuestionRepo.GetQuestionById(1); // Replace 1 with the actual question id
+        prompts = await PromptRepo.GetPromptByQuestion(1); // Replace 1 with the actual question id
+        
+    }
+
+    private void HandleChange(ChangeEventArgs e)
+    {
+        selectedPromptId = int.Parse(e.Value.ToString());
+    }
+
+    private void CheckAnswer()
+    {
+        isAnswered = true;
+        isCorrect = prompts.FirstOrDefault(p => p.Id == selectedPromptId)?.IsCorrect ?? false;
+    }
+}
