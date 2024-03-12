@@ -1,0 +1,287 @@
+﻿@page "/adminview"
+@using System.ComponentModel.DataAnnotations
+@using ValhallaVaultCyberAwareness.Data.Models
+@using ValhallaVaultCyberAwareness.Repositories
+@inject IValhallaUow _uow
+
+@rendermode InteractiveServer
+
+<h3 class="mt-4 text-light">Admin</h3>
+
+@if (categories == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row ">
+        @foreach (var category in categories)
+        {
+            
+            <div class="col-md-12 mb-4 bg-black">
+                <div class="card shadow bg-black text-light">
+                    <div class="card-body">
+
+                        <h5 class="card-title">@category.CategoryName <button class="btn btn-outline-light" @onclick="() => OpenEditModal(category)">Edit Category</button></h5>
+                        <div class="row">
+                            @foreach (var segment in category.Segments)
+                            {
+                                <div class="col-md-4 bg-black">
+                                    <h6>@segment.SegmentName</h6>
+                                    <ul class="list-group list-group-flush">
+                                        @foreach (var subCategory in segment.SubCategory)
+                                        {
+                                            <li class="list-group-item bg-black">
+                                                <button class="btn btn-outline-light" @onclick="() => OpenEditModal(subCategory)">@subCategory.SubCategoryName</button>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (selectedSubCategory != null)
+{
+    <div class="modal show" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content bg-black text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Subcategory</h5>
+                </div>
+                <div class="modal-body">
+                    <EditForm Model="selectedSubCategory" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <div class="mb-3">
+                            <label class="form-label" for="subCategoryName">Subcategory Name:</label>
+                            <InputText class="form-control" id="subCategoryName" @bind-Value="selectedSubCategory.SubCategoryName" />
+                            <ValidationMessage For="@(() => selectedSubCategory.SubCategoryName)" />
+                            <!-- Delete button for subcategory -->
+                            <button class="btn btn-danger" @onclick="() => DeleteSubCategory(selectedSubCategory.Id)">Delete Subcategory</button>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Questions:</label>
+                            @foreach (var question in questions)
+                            {
+                                <div class="input-group mb-3">
+                                    <InputText class="form-control" @bind-Value="question.Question" />
+                                    <!-- delete button for question -->
+                                    <button class="btn btn-danger" @onclick="() => DeleteQuestion(question.Id)">Delete</button>
+                                </div>
+                            }
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Prompts:</label>
+                            @foreach (var prompt in prompts)
+                            {
+                                <div class="input-group mb-3">
+                                    <InputText class="form-control" @bind-Value="prompt.Prompt" />
+                                    <!-- delete button for prompt -->
+                                    <button class="btn btn-danger" @onclick="() => Deleteprompt(prompt.Id)">Delete</button>
+                                </div>
+                            }
+                        </div>
+                        <div class="text-end">
+                            <button class="btn btn-outline-light" type="submit">Save Changes</button>
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" @onclick="ClearSelected">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@if (selectedCategory != null)
+{
+    <div class="modal show" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content bg-black text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Category</h5>
+                </div>
+                <div class="modal-body bg-black ">
+                    <EditForm Model="selectedCategory" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <div class="mb-3">
+                            <label class="form-label" for="categoryName">Category Name:</label>
+                            <InputText class="form-control" id="categoryName" @bind-Value="selectedCategory.CategoryName" />
+                            <!-- Add delete button for category -->
+                            <button class="btn btn-danger" @onclick="() => DeleteCategory(selectedCategory.Id)">Delete </button>
+                            <ValidationMessage For="@(() => selectedCategory.CategoryName)" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Segments:</label>
+                            @foreach (var segment in segments)
+                            {
+                                <div class="input-group mb-3">
+                                    <InputText class="form-control" @bind-Value="segment.SegmentName" />
+                                    <!-- Add delete button for segment -->
+                                    <button class="btn btn-danger" @onclick="() => DeleteSegment(segment.Id)">Delete </button>
+                                </div>
+                            }
+                        </div>
+                        <div class="text-end">
+                            <button class="btn btn-outline-light" type="submit">Save Changes</button>
+                        </div>
+                    </EditForm>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" @onclick="ClearSelected">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@code {
+    public List<PromptModel> prompts = [];
+    public List<QuestionModel> questions = [];
+    public List<CategoryModel> categories = [];
+    public List<SegmentModel> segments = [];
+    public bool isDeleted;
+    private SubCategoryModel? selectedSubCategory;
+    private CategoryModel? selectedCategory;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await _uow.CategoryRepo.GetAllCategoriesWithSegmentsAndSubCategories();
+
+
+    }
+    private async void OpenEditModal(object item)
+
+    {
+        if (item is SubCategoryModel subCategory)
+        {
+            selectedSubCategory = subCategory;
+            questions = await _uow.QuestionRepo.GetQuestionBySubCategory(subCategory.Id);
+            foreach (var question in questions)
+            {
+                prompts = await _uow.PromptRepo.GetPromptByQuestion(question.Id);
+            }
+        }
+        else if (item is CategoryModel category)
+        {
+            selectedCategory = category;
+            segments = await _uow.SegmentRepo.GetSegmentByCategory(category.Id);
+        }
+
+        StateHasChanged();
+    }
+    private void ClearSelected()
+    {
+        selectedSubCategory = null;
+        selectedCategory = null;
+    }
+    private async Task DeleteCategory(int categoryId)
+    {
+        if (categoryId != null)
+        {
+            await _uow.CategoryRepo.DeleteCategory(categoryId);
+            isDeleted = true;
+            StateHasChanged();
+        }
+    }
+
+    // Method to delete a segment
+    private async Task DeleteSegment(int segmentId)
+    {
+        if (segmentId != null)
+        {
+            await _uow.SegmentRepo.DeleteSegment(segmentId);
+            isDeleted = true;
+            StateHasChanged();
+        }
+
+    }
+
+    private async Task DeleteSubCategory(int subcategoryId)
+    {
+        if (subcategoryId != null)
+        {
+            isDeleted = true;
+            await _uow.SubCategoryRepo.DeleteSubCategory(subcategoryId);
+
+        }
+        StateHasChanged();
+    }
+
+    private async Task DeleteQuestion(int questionId)
+    {
+        if (questionId != null)
+        {
+            isDeleted = true;
+
+            await _uow.QuestionRepo.DeleteQuestion(questionId);
+
+            StateHasChanged();
+        }
+
+
+    }
+    private async Task Deleteprompt(int promptId)
+    {
+        if (promptId != null)
+        {
+            isDeleted = true;
+
+            await _uow.PromptRepo.DeletePrompt(promptId);
+
+            StateHasChanged();
+
+        }
+
+    }
+    // Method to handle form submission
+    private async Task HandleValidSubmit()
+    {
+        if (isDeleted)
+        {
+            // Skip update logic if something is deleted
+            ClearSelected();
+
+        }
+        else if (selectedSubCategory != null)
+        {
+            // Update subcategory
+            await _uow.SubCategoryRepo.UpdateSubCategory(selectedSubCategory);
+            foreach (var question in questions)
+            {
+                await _uow.QuestionRepo.UpdateQuestion(question);
+            }
+            foreach (var prompt in prompts)
+            {
+                await _uow.PromptRepo.UpdatePrompt(prompt);
+            }
+            ClearSelected();
+        }
+        else if (selectedCategory != null)
+        {
+            // Update category
+            await _uow.CategoryRepo.UpdateCategory(selectedCategory);
+            foreach (var segment in selectedCategory.Segments)
+            {
+                await _uow.SegmentRepo.UpdateSegment(segment);
+            }
+            ClearSelected();
+        }
+
+    }
+
+
+
+}
+}
