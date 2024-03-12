@@ -12,7 +12,7 @@ namespace ValhallaVaultCyberAwareness.Data
         public DbSet<QuestionModel> Questions { get; set; }
         public DbSet<PromptModel> Prompts { get; set; }
         public DbSet<ApplicationUserQuestionModel> ApplicationUserQuestions { get; set; }
-
+        public DbSet<IpLoggerModel> LoggedIpUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

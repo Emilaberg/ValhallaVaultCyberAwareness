@@ -1,4 +1,5 @@
 ﻿using ValhallaVaultCyberAwareness.Data;
+using ValhallaVaultCyberAwareness.Data.Models;
 
 namespace ValhallaVaultCyberAwareness.Repositories
 {

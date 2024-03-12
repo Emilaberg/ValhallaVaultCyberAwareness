@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Data.Models;
+using ValhallaVaultCyberAwareness.Repositories;
 
 namespace ValhallaVaultCyberAwareness.Data.Middleware
 {
@@ -16,7 +18,7 @@ namespace ValhallaVaultCyberAwareness.Data.Middleware
             _httpClient = new();
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, ApplicationDbContext _context)
         {
             var endpoint = context.GetEndpoint();
             if (endpoint != null)
@@ -28,8 +30,14 @@ namespace ValhallaVaultCyberAwareness.Data.Middleware
                     // Your custom logic here
                     var response = await _httpClient.GetAsync("https://jsonip.com/");
                     IpLoggerModel? model = await response.Content.ReadFromJsonAsync<IpLoggerModel>();
-                    
-                }else
+
+                    if (model != null)
+                    {
+                        _context.LoggedIpUsers.Add(model);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                else
                 {
 
                 }

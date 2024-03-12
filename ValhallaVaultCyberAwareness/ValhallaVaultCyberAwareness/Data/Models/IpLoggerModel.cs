@@ -6,6 +6,6 @@
         public string Ip { get; set; } = null!;
         public string? Location { get; set; }
         public string? Latitude { get; set; }
-        public string? longitude { get; set; }
+        public string? Longitude { get; set; }
     }
 }
