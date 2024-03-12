@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Models;
 
@@ -9,7 +8,7 @@ namespace ValhallaVaultCyberAwareness.Repositories
     {
         private readonly ApplicationDbContext _context;
 
-        public UserRepository(ApplicationDbContext context, SignInManager<ApplicationUser> signiInManager)
+        public UserRepository(ApplicationDbContext context)
         {
             _context = context;
 
