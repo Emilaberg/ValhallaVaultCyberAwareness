@@ -1,4 +1,4 @@
-﻿@page "/adminview"
+﻿@page "/admin/adminview"
 @using System.ComponentModel.DataAnnotations
 @using ValhallaVaultCyberAwareness.Data.Models
 @using ValhallaVaultCyberAwareness.Repositories
@@ -71,7 +71,8 @@ else
                                 <div class="input-group mb-3">
                                     <InputText class="form-control" @bind-Value="question.Question" />
                                     <!-- delete button for question -->
-                                    <button class="btn btn-danger" @onclick="() => DeleteQuestion(question.Id)">Delete</button>
+                                    @* <button class="btn btn-danger" @onclick="() => DeleteQuestion(question.Id)">Delete</button> *@
+                                    <button class="btn btn-danger" @onclick="() => {return;}">Delete</button>
                                 </div>
                             }
                         </div>
