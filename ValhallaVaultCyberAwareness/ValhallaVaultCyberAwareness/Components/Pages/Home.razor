@@ -1,14 +1,14 @@
-﻿@page "/home"
+@page "/home"
 @using Microsoft.EntityFrameworkCore
 @rendermode InteractiveServer
 @attribute [StreamRendering]
 @inject NavigationManager NavigationManager
-@inject MyProgressService ProgressService
-@* @inject IValhallaUow Uow *@
+@inject IValhallaUow Uow
 @using ValhallaVaultCyberAwareness.Components.Pages
 @using ValhallaVaultCyberAwareness.Data
-@* @using static ValhallaVaultCyberAwareness.Repositories.IValhallaUow
- *@
+@using ValhallaVaultCyberAwareness.Data.Models
+@using ValhallaVaultCyberAwareness.Repositories
+
 <div>
     <h1>Hello!</h1>
 </div>
@@ -21,56 +21,29 @@
 
 <SearchBox />
 
-@if (userProgress != null)
+@if (categories != null)
 {
-    foreach (var progress in userProgress)
+    foreach (var category in categories)
     {
-        <p>@progress.Key: @progress.Value%</p>
+        <div>
+            <h2>@category.CategoryName</h2>
+            <p>Progress: @category.Segments.Count(s => s.SubCategory.All(sc => sc.IsCompleted)) / @category.Segments.Count</p>
+            <button @onclick="() => NavigateToSegment(category.Id)">Start Quiz</button>
+        </div>
     }
+
+   
 }
 
-@code{
-    private Dictionary<string, double>? userProgress;
-
+@code {
+    private List<CategoryModel>? categories;
     protected override async Task OnInitializedAsync()
     {
-        var userId = "YourUserId"; // Replace with actual user id
-        userProgress = await ProgressService.GetUserProgress(userId);
+        categories = await Uow.CategoryRepo.GetAllCategoriesWithSegmentsAndSubCategories();
     }
 
-    public class MyProgressService
+    private void NavigateToSegment(int categoryId)
     {
-        private readonly ApplicationDbContext _context;
-
-        public MyProgressService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<Dictionary<string, double>> GetUserProgress(string userId)
-        {
-            var progress = new Dictionary<string, double>();
-
-            var categories = await _context.SubCategories.ToListAsync();
-
-            foreach (var category in categories)
-            {
-                var totalQuestions = await _context.Questions
-                    .Where(q => q.SubCategoryId == category.Id)
-                    .CountAsync();
-
-                var answeredQuestions = await _context.Questions
-                    .Where(q => q.SubCategoryId == category.Id && q.ApplicationUsers.Any(u => u.Id == userId))
-                    .CountAsync();
-
-                if (totalQuestions > 0)
-                {
-                    var progressPercentage = (double)answeredQuestions / totalQuestions * 100;
-                    progress.Add(category.SubCategoryName ?? string.Empty, progressPercentage);
-                }
-            }
-
-            return progress;
-        }
+        NavigationManager.NavigateTo($"/segment/{categoryId}");
     }
 }
