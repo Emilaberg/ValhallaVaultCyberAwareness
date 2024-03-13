@@ -28,11 +28,9 @@
         <div>
             <h2>@category.CategoryName</h2>
             <p>Progress: @category.Segments.Count(s => s.SubCategory.All(sc => sc.IsCompleted)) / @category.Segments.Count</p>
-            <button @onclick="() => NavigateToSegment(category.Id)">Start Quiz</button>
+            <button @onclick="() => NavigateToQuiz(category.Id)">Start Quiz</button>
         </div>
     }
-
-   
 }
 
 @code {
@@ -42,8 +40,8 @@
         categories = await Uow.CategoryRepo.GetAllCategoriesWithSegmentsAndSubCategories();
     }
 
-    private void NavigateToSegment(int categoryId)
+    private void NavigateToQuiz(int categoryId)
     {
-        NavigationManager.NavigateTo($"/segment/{categoryId}");
+        NavigationManager.NavigateTo($"/frageSida/{categoryId}");
     }
 }

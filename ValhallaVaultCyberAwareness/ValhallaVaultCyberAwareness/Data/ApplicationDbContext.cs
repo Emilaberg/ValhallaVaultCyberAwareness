@@ -19,7 +19,6 @@ namespace ValhallaVaultCyberAwareness.Data
             base.OnModelCreating(builder);
 
             builder.Entity<ApplicationUserQuestionModel>().HasKey(e => new { e.ApplicationUserId, e.QuestionModelId });
-            builder.Entity<ApplicationUserQuestionModel>().ToTable("ApplicationUserQuestions"); // Test
         }
     }
 }
