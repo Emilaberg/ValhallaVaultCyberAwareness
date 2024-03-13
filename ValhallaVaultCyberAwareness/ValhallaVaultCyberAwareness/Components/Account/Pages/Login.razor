@@ -13,6 +13,9 @@
 <PageTitle>Log in</PageTitle>
 
 <div class="container">
+    <video autoplay muted loop id="video-bg">
+        <source src="images/Bakrund.mp4" type="video/mp4">
+    </video>
     <section class="login-box">
         <h1>Log in</h1>
         <div class="row">
@@ -22,7 +25,7 @@
                     <DataAnnotationsValidator />
                     <h2>Use a local account to log in. </h2>
                     <hr />
-                    <ValidationSummary class="text-danger" role="alert" />
+                    
                     <div class="form-floating mb-3">
                         <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                         <label for="email" class="form-label">Email</label>
@@ -117,23 +120,34 @@
 }
 
 <style>
+
     body {
-        background-color: gray;
         margin: 0;
         padding: 0;
-        /* font-family: copperplate, papyrus, fantasy; */
-
+        font-family: copperplate, papyrus, fantasy;
     }
 
     .container {
+        position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
     }
 
+    #video-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
     .login-box {
-        background-color: lightblue;
+        position: absolute;
+        z-index: 1;
+        background-color: transparent;
         padding: 20px;
         border-radius: 10px;
         width: 400px;
@@ -145,15 +159,17 @@
         border-radius: 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         border: 2px solid #000;
-        /* font-family: copperplate, papyrus, fantasy; */
     }
 
     h1 {
         font-size: 32px;
         text-align: center;
+        color: white;
     }
 
     h2 {
         font-size: 20px;
         text-align: center;
+        color: white;
     }
+</style>

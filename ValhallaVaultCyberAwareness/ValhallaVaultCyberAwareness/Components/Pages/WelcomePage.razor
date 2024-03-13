@@ -1,34 +1,68 @@
 ﻿@page "/"
 
+<PageTitle>Home</PageTitle>
 
-    <PageTitle>Home</PageTitle>
-
-    <div class="row justify-content-center">
-        <h1 class="text-center" style="font-family: copperplate, papyrus, fantasy; color: lightblue;">Welcome to Valhalla Vault Cyber Awareness</h1>
-        <p class="text-center" style="font-family: copperplate, papyrus, fantasy">"Empowering Minds, Securing Futures: Valhalla Vault Cyber Awareness" </p>
-    </div>
-
-    <style>
-        body {
-            background-color: gray;
-        }
-
-        .container {
-            display: flex;
-            justify-content: center;
-        }
-
-        .content {
-            width: 500px;
-            text-align: center;
-        }
-        
-    </style>
-
-    <div class="container">
-        <div class="content">
-            <h1 style="font-family: copperplate, papyrus, fantasy; font-size:x-large; color:lightblue; ">About us</h1>
-            <p style="font-family: copperplate, papyrus, fantasy"> In today's digital age, where cyber threats are rampant, it's vital to equip your company with robust defense strategies. Our training courses empower your team with the knowledge and skills to safeguard your digital assets effectively. Covering threat identification, security implementation, and breach response, our comprehensive training blends theory with practical exercises for real-world application. Led by cybersecurity experts, our personalized guidance ensures your team is prepared and proactive in facing digital challenges. Join us to transform your team into a cybersecurity fortress. With our training, you anticipate and neutralize threats, fortifying your company's digital defenses. Dare to be unbreakable with us.</p>
-            
+<div class="video-background">
+    <video autoplay muted loop id="video-bg">
+        <source src="images/Bakrund.mp4" type="video/mp4">
+    </video>
+    <div class="content">
+        <div class="row justify-content-center">
+            <h1 class="text-center" style="font-family: copperplate, papyrus, fantasy; color: white;">Welcome to Valhalla Vault Cyber Awareness</h1>
+            <p class="text-center" style="font-family: copperplate, papyrus, fantasy; color: white;">"Empowering Minds, Securing Futures: Valhalla Vault Cyber Awareness" </p>
+        </div>
+        <div class="container">
+            <div>
+                <h1 style="font-family: copperplate, papyrus, fantasy; font-size:x-large;">About us</h1>
+                <p style="font-family: copperplate, papyrus, fantasy;"> In today's digital age, where cyber threats are rampant, it's vital to equip your company with robust defense strategies. Our training courses empower your team with the knowledge and skills to safeguard your digital assets effectively. Covering threat identification, security implementation, and breach response, our comprehensive training blends theory with practical exercises for real-world application. Led by cybersecurity experts, our personalized guidance ensures your team is prepared and proactive in facing digital challenges. Join us to transform your team into a cybersecurity fortress. With our training, you anticipate and neutralize threats, fortifying your company's digital defenses. Dare to be unbreakable with us.</p>
+            </div>
         </div>
     </div>
+</div>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: copperplate, papyrus, fantasy;
+    }
+
+    .video-background {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    #video-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .row h1,
+    .row p {
+        color: white;
+    }
+
+    .container {
+        width: 500px;
+        text-align: center;
+        color:white;
+    }
+</style>

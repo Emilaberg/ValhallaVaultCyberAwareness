@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
 using ValhallaVaultCyberAwareness.Data;
-using ValhallaVaultCyberAwareness.Data.Models.Managers;
+using ValhallaVaultCyberAwareness.Data.Managers;
 using ValhallaVaultCyberAwareness.Repositories;
 //using static ValhallaVaultCyberAwareness.Components.Pages.Home;
 
