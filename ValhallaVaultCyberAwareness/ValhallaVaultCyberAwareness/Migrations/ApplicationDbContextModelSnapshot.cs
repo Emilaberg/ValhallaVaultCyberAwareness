@@ -22,21 +22,6 @@ namespace ValhallaVaultCyberAwareness.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ApplicationUserQuestionModel", b =>
-                {
-                    b.Property<int>("AnsweredQuestionsId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ApplicationUsersId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("AnsweredQuestionsId", "ApplicationUsersId");
-
-                    b.HasIndex("ApplicationUsersId");
-
-                    b.ToTable("ApplicationUserQuestionModel");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -235,6 +220,24 @@ namespace ValhallaVaultCyberAwareness.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.ApplicationUserQuestionModel", b =>
+                {
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("QuestionModelId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCorrectlyAnswered")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ApplicationUserId", "QuestionModelId");
+
+                    b.HasIndex("QuestionModelId");
+
+                    b.ToTable("ApplicationUserQuestionModel");
+                });
+
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.CategoryModel", b =>
                 {
                     b.Property<int>("Id")
@@ -346,21 +349,6 @@ namespace ValhallaVaultCyberAwareness.Migrations
                     b.ToTable("SubCategories");
                 });
 
-            modelBuilder.Entity("ApplicationUserQuestionModel", b =>
-                {
-                    b.HasOne("ValhallaVaultCyberAwareness.Data.Models.QuestionModel", null)
-                        .WithMany()
-                        .HasForeignKey("AnsweredQuestionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ValhallaVaultCyberAwareness.Data.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("ApplicationUsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -412,10 +400,25 @@ namespace ValhallaVaultCyberAwareness.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.ApplicationUserQuestionModel", b =>
+                {
+                    b.HasOne("ValhallaVaultCyberAwareness.Data.ApplicationUser", null)
+                        .WithMany("UsersAnsweredQuestions")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ValhallaVaultCyberAwareness.Data.Models.QuestionModel", null)
+                        .WithMany("UsersAnsweredQuestions")
+                        .HasForeignKey("QuestionModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.PromptModel", b =>
                 {
                     b.HasOne("ValhallaVaultCyberAwareness.Data.Models.QuestionModel", "Question")
-                        .WithMany("Promps")
+                        .WithMany("Prompts")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -456,6 +459,11 @@ namespace ValhallaVaultCyberAwareness.Migrations
                     b.Navigation("Segment");
                 });
 
+            modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.ApplicationUser", b =>
+                {
+                    b.Navigation("UsersAnsweredQuestions");
+                });
+
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.CategoryModel", b =>
                 {
                     b.Navigation("Segments");
@@ -463,7 +471,9 @@ namespace ValhallaVaultCyberAwareness.Migrations
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.QuestionModel", b =>
                 {
-                    b.Navigation("Promps");
+                    b.Navigation("Prompts");
+
+                    b.Navigation("UsersAnsweredQuestions");
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.SegmentModel", b =>

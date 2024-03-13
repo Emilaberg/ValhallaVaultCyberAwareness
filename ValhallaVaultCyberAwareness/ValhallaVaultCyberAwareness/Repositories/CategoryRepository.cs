@@ -12,62 +12,60 @@ namespace ValhallaVaultCyberAwareness.Repositories
         {
             _context = context;
         }
-        public async Task<List<CategoryModel>> GetAllCategories()
+        public async Task<List<CategoryModel>?> GetAllCategories()
         {
             var categories = await _context.Categories.ToListAsync();
 
             return categories;
 
         }
-        public async Task<CategoryModel> GetCategoryById(int id)
+        public async Task<CategoryModel?> GetCategoryById(int id)
         {
             var singleCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
-            if (singleCategory != null)
-            {
-                return singleCategory;
-            }
-            throw new NullReferenceException();
+            return singleCategory;
+
         }
-        public async Task<CategoryModel> AddCategory(CategoryModel newCategory)
+        public async Task<CategoryModel?> AddCategory(CategoryModel newCategory)
         {
-            if (newCategory != null)
-            {
-                _context.Add(newCategory);
-                await _context.SaveChangesAsync();
 
-                return newCategory;
-            }
-            throw new NullReferenceException();
+            _context.Add(newCategory);
+            await _context.SaveChangesAsync();
+
+            return newCategory;
+
         }
 
-        public async Task<CategoryModel> DeleteCategory(int id)
+        public async Task<CategoryModel?> DeleteCategory(int id)
         {
             var categoryToDelete = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
 
-            if (categoryToDelete != null)
-            {
-                _context.Categories.Remove(categoryToDelete);
+            _context.Categories.Remove(categoryToDelete);
 
-                await _context.SaveChangesAsync();
-                return categoryToDelete;
-            }
-            throw new NullReferenceException();
+            await _context.SaveChangesAsync();
+            return categoryToDelete;
+
         }
-        public async Task<CategoryModel> UpdateCategory(CategoryModel updatedCategory)
+        public async Task<CategoryModel?> UpdateCategory(CategoryModel updatedCategory)
         {
             var categoryToUpdate = await _context.Categories.FirstOrDefaultAsync(c => c.Id == updatedCategory.Id);
 
-            if (categoryToUpdate != null)
-            {
-                categoryToUpdate.CategoryName = updatedCategory.CategoryName;
 
-                await _context.SaveChangesAsync();
-                return updatedCategory;
-            }
-            throw new NullReferenceException();
+            categoryToUpdate.CategoryName = updatedCategory.CategoryName;
+
+            await _context.SaveChangesAsync();
+            return updatedCategory;
+
         }
 
+        //Get all categorys whith segments and subcategories
+        public async Task<List<CategoryModel>?> GetAllCategoriesWithSegmentsAndSubCategories()
+        {
+            return await _context.Categories
+                .Include(category => category.Segments)
+                .ThenInclude(segment => segment.SubCategory)
+                .ToListAsync();
+        }
 
     }
 }

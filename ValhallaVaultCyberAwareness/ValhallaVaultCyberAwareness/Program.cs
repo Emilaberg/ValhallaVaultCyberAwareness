@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
-using ValhallaVaultCyberAwareness.Controllers;
 using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Models.Managers;
 using ValhallaVaultCyberAwareness.Repositories;
+//using static ValhallaVaultCyberAwareness.Components.Pages.Home;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +16,24 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddControllers();
+
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
+
+builder.Services.AddScoped<IValhallaUow, ValhallaUow>();
+//builder.Services.AddScoped<MyProgressService>();
+builder.Services.AddScoped<SegmentRepository>();
+builder.Services.AddScoped<SubCategoryRepository>();
+builder.Services.AddScoped<QuestionRepository>();
 builder.Services.AddScoped<CategoryRepository>();
-builder.Services.AddScoped<CategoryController>();
+builder.Services.AddScoped<PromptRepository>();
+
+
+
+
 
 builder.Services.AddAuthentication(options =>
     {
@@ -39,11 +52,31 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     //lägg in era options här för max login attempts, olika password requirements etc.
     options.SignIn.RequireConfirmedAccount = true;
 })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin();
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+    });
+});
+//Adding admin role and admin user
+
+using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
+{
+    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    new RoleManager(signInManager, roleManager).InitialAdminAccount();
+}
 
 var app = builder.Build();
 
@@ -72,5 +105,9 @@ app.MapRazorComponents<App>()
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
+app.MapControllers();
+
+app.UseCors("AllowAll");
 
 app.Run();
