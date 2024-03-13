@@ -5,7 +5,7 @@ using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
 using ValhallaVaultCyberAwareness.Controllers;
 using ValhallaVaultCyberAwareness.Data;
-using ValhallaVaultCyberAwareness.Data.Managers;
+using ValhallaVaultCyberAwareness.Data.Models.Managers;
 using ValhallaVaultCyberAwareness.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
