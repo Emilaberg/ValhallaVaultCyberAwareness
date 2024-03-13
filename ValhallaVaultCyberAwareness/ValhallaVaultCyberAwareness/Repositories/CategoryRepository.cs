@@ -63,7 +63,7 @@ namespace ValhallaVaultCyberAwareness.Repositories
         {
             return await _context.Categories
                 .Include(category => category.Segments)
-                    .ThenInclude(segment => segment.SubCategory)
+                .ThenInclude(segment => segment.SubCategory)
                 .ToListAsync();
         }
 
