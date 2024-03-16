@@ -1,12 +1,12 @@
-﻿@page "/adminview"
+﻿@page "/Admin/admin"
 @using System.ComponentModel.DataAnnotations
 @using ValhallaVaultCyberAwareness.Data.Models
 @using ValhallaVaultCyberAwareness.Repositories
 @inject IValhallaUow _uow
-
+@inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
-<h1 class="mt-4 text-dark text-center">Admin OverView</h1>
+<h1 class="mt-4 text-light text-center">Admin OverView</h1>
 
 @if (categories == null)
 {
@@ -110,7 +110,7 @@ else
                     <p>Are you sure you want to delete </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="() => DeleteSubCategory(selectedSubCategory.Id)">Yes</button>
+                    <button type="button" class="btn btn-secondary" @onclick="() => DeleteItem(selectedSubCategory)" data-dismiss="modal">Yes</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                 </div>
             </div>
@@ -135,24 +135,13 @@ else
                             <button class="btn btn-outline-light" type="button" data-toggle="modal" data-target="#confirmationModal">Delete </button>
                             <ValidationMessage For="@(() => selectedCategory.CategoryName)" />
                         </div>
-                        @*  <div class="mb-3">
-                    <label class="form-label">Segments:</label>
-                    @foreach (var segment in segments)
-                    {
-                    <div class="input-group mb-3">
-                    <InputText class="form-control" @bind-Value="segment.SegmentName" />
-                    <!-- Add delete button for segment -->
-                    <button class="btn btn-outline-light" @onclick="() => DeleteSegment(segment.Id)">Delete </button>
-                    </div>
-                    }
-                    </div> *@
                         <div class="text-end">
                             <button class="btn btn-outline-light" type="submit">Save Changes</button>
                         </div>
                     </EditForm>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-light" @onclick="ClearSelected">Close</button>
+                    <button type="button" class="btn btn-outline-light" @onclick="ClearSelected" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -168,7 +157,7 @@ else
                     <p>Are you sure you want to delete </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="() => DeleteCategory(selectedCategory.Id)">Yes</button>
+                    <button type="button" class="btn btn-secondary" @onclick="() => DeleteItem(selectedCategory)">Yes</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                 </div>
             </div>
@@ -192,19 +181,19 @@ else
                             <br />
                             <label class="form-label" for="explaination">Explaination:</label>
                             <InputText class="form-control" id="explaination" @bind-Value="selectedQuestion.Explaination" />
-                            <!-- Add delete button for category -->
+                            <!-- Add delete button for Question -->
                             <button class="btn btn-outline-light" type="button" data-toggle="modal" data-target="#confirmationModal">Delete </button>
                             <ValidationMessage For="@(() => selectedQuestion.Question)" />
                         </div>
                         <div class="mb-3">
 
                             <label class="form-label">Prompts:</label>
-                            @foreach (var prompt in prompts)
+                            @foreach (var prompt in selectedQuestion.Prompts)
                             {
                                 <div class="input-group mb-3">
                                     <InputText class="form-control" @bind-Value="prompt.Prompt" />
-                                    <!-- Add delete button for segment -->
-                                    <button class="btn btn-outline-light" type="button" data-toggle="modal" data-target="#confirmationModal">Delete </button>
+                                    <!-- Add delete button for Prompt -->
+                                    <button class="btn btn-outline-light" type="button" @onclick="() => DeleteItem(prompt)">Delete </button>
                                 </div>
                             }
 
@@ -231,12 +220,13 @@ else
                     <p>Are you sure you want to delete </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="() => DeleteQuestion(selectedQuestion.Id)">Yes</button>
+                    <button type="button" class="btn btn-secondary" @onclick="() => DeleteItem(selectedQuestion)" data-dismiss="modal">Yes</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                 </div>
             </div>
         </div>
     </div>
+
 }
 @if (selectedSegment != null)
 {
@@ -245,7 +235,9 @@ else
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content bg-dark text-light">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Segment</h5>
+                    <h5 class="modal-title">
+                        Edit Segment
+                    </h5>
                 </div>
                 <div class="modal-body bg-dark ">
                     <EditForm Model="selectedSegment" OnValidSubmit="HandleValidSubmit">
@@ -261,19 +253,28 @@ else
                         </div>
                         <DataAnnotationsValidator />
                         <div class="mb-3">
-                            <label class="form-label" for="segmentName">Category Name:</label>
+                            <label class="form-label" for="segmentName">
+                                Category
+                                Name:
+                            </label>
                             <InputText class="form-control" id="segmentName" @bind-Value="selectedSegment.SegmentName" />
                             <!-- Add delete button for category -->
-                            <button class="btn btn-outline-light" type="button" data-toggle="modal" data-target="#confirmationModal">Delete </button>
+                            <button class="btn btn-outline-light" type="button" data-toggle="modal" data-target="#confirmationModal">
+                                Delete
+                            </button>
                             <ValidationMessage For="@(() => selectedSegment.SegmentName)" />
                         </div>
                         <div class="text-end">
-                            <button class="btn btn-outline-light" type="submit">Save Changes</button>
+                            <button class="btn btn-outline-light" type="submit">
+                                Save Changes
+                            </button>
                         </div>
                     </EditForm>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-light" @onclick="ClearSelected">Close</button>
+                    <button type="button" class="btn btn-outline-light" @onclick="ClearSelected">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
@@ -283,14 +284,20 @@ else
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"> Confirm Delete</h5>
+                    <h5 class="modal-title">
+                        Confirm Delete
+                    </h5>
                 </div>
                 <div class="modal-body">
                     <p>Are you sure you want to delete </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="() => DeleteSegment(selectedSegment.Id)">Yes</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-secondary" @onclick="() => DeleteItem(selectedSegment)" data-dismiss="modal">
+                        Yes
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        No
+                    </button>
                 </div>
             </div>
         </div>
@@ -301,14 +308,10 @@ else
 
 
 @code {
-    public List<PromptModel> prompts = [];
-    public List<QuestionModel> questions = [];
-    public List<CategoryModel> categories = [];
-    public List<SegmentModel> segments = [];
-    public List<SubCategoryModel> subCategories = [];
+    private List<CategoryModel> categories = [];
+    private List<SegmentModel> segments = [];
 
-    public bool isDeleted;
-    private bool confirm = false;
+
 
     private SubCategoryModel? selectedSubCategory;
     private CategoryModel? selectedCategory;
@@ -320,10 +323,11 @@ else
     {
         categories = await _uow.CategoryRepo.GetAllCategoriesWithSegmentsAndSubCategories();
         segments = await _uow.SegmentRepo.GetAllSegments();
-
+        base.OnInitialized();
 
     }
-    private async void OpenEditModal(object item)
+    //open modal for edits based on the Object passed to the method
+    private void OpenEditModal(object item)
 
     {
         if (item is CategoryModel category)
@@ -333,7 +337,6 @@ else
         else if (item is SubCategoryModel subCategory)
         {
             selectedSubCategory = subCategory;
-            questions = await _uow.QuestionRepo.GetQuestionBySubCategory(subCategory.Id);
 
         }
         else if (item is SegmentModel segment)
@@ -344,114 +347,97 @@ else
         else if (item is QuestionModel question)
         {
             selectedQuestion = question;
-            prompts = await _uow.PromptRepo.GetPromptByQuestion(question.Id);
+
+        }
+    }
+    //delete based on whicg object is passed to the method
+    private async Task DeleteItem(object item)
+    {
+        if (item is CategoryModel category)
+        {
+            selectedCategory = category;
+            if (selectedCategory != null)
+            {
+                await _uow.CategoryRepo.DeleteCategory(selectedCategory.Id);
+            }
+        }
+        else if (item is SubCategoryModel subCategory)
+        {
+            selectedSubCategory = subCategory;
+
+            if (selectedSubCategory != null)
+            {
+                await _uow.SubCategoryRepo.DeleteSubCategory(selectedSubCategory.Id);
+            }
+        }
+        else if (item is SegmentModel segment)
+        {
+            selectedSegment = segment;
+
+            if (selectedSegment != null)
+            {
+                await _uow.SegmentRepo.DeleteSegment(selectedSegment.Id);
+            }
+        }
+
+        else if (item is QuestionModel question)
+        {
+            selectedQuestion = question;
+
+            if (selectedQuestion != null)
+            {
+                await _uow.QuestionRepo.DeleteQuestion(selectedQuestion.Id);
+            }
 
         }
 
+        else if (item is PromptModel prompt)
+        {
+            if (prompt != null)
+            {
+                await _uow.PromptRepo.DeletePrompt(prompt.Id);
+            }
+        }
 
-        StateHasChanged();
+        ClearSelected();
     }
+
+    //logic for closing Edit Modal
     private void ClearSelected()
     {
         selectedSubCategory = null;
         selectedCategory = null;
-
-        NavigationManager.NavigateTo(NavigationManager.ToBaseRelativePath(NavigationManager.Uri), true);
-
-    }
-    private async Task DeleteCategory(int categoryId)
-    {
-        if (categoryId != null)
-        {
-            await _uow.CategoryRepo.DeleteCategory(categoryId);
-            isDeleted = true;
-            StateHasChanged();
-        }
-    }
-
-    // Method to delete a segment
-    private async Task DeleteSegment(int segmentId)
-    {
-        if (segmentId != null)
-        {
-            await _uow.SegmentRepo.DeleteSegment(segmentId);
-            isDeleted = true;
-            StateHasChanged();
-        }
-
-    }
-
-    private async Task DeleteSubCategory(int subcategoryId)
-    {
-        if (subcategoryId != null)
-        {
-            isDeleted = true;
-            await _uow.SubCategoryRepo.DeleteSubCategory(subcategoryId);
-
-        }
+        selectedSegment = null;
+        selectedQuestion = null;
         StateHasChanged();
     }
 
-    private async Task DeleteQuestion(int questionId)
-    {
-        if (questionId != null)
-        {
-            isDeleted = true;
-
-            await _uow.QuestionRepo.DeleteQuestion(questionId);
-
-            StateHasChanged();
-            ClearSelected();
-        }
-        await OnInitializedAsync();
-
-    }
-    private async Task Deleteprompt(int promptId)
-    {
-        if (promptId != null)
-        {
-            isDeleted = true;
-
-            await _uow.PromptRepo.DeletePrompt(promptId);
-
-            StateHasChanged();
-            ClearSelected();
-
-        }
-
-    }
     // Method to handle form submission
     private async Task HandleValidSubmit()
     {
-        if (isDeleted)
-        {
-            // Skip update logic if something is deleted
-            ClearSelected();
 
-        }
-        else if (selectedCategory != null)
+        if (selectedCategory != null)
         {
             // Update category
             await _uow.CategoryRepo.UpdateCategory(selectedCategory);
-
         }
         else if (selectedSegment != null)
         {
+            // Update segment
             await _uow.SegmentRepo.UpdateSegment(selectedSegment);
-
         }
         else if (selectedSubCategory != null)
         {
             // Update subcategory
             await _uow.SubCategoryRepo.UpdateSubCategory(selectedSubCategory);
-
         }
         else if (selectedQuestion != null)
         {
+            //update question
             await _uow.QuestionRepo.UpdateQuestion(selectedQuestion);
-
         }
-
+        ClearSelected();
+        NavigationManager.NavigateTo(NavigationManager.ToBaseRelativePath(NavigationManager.Uri), true);
     }
 
 
