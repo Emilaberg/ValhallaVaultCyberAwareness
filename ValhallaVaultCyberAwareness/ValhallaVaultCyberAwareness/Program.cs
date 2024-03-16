@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
 using ValhallaVaultCyberAwareness.Data;
-using ValhallaVaultCyberAwareness.Data.Managers;
 using ValhallaVaultCyberAwareness.Repositories;
 //using static ValhallaVaultCyberAwareness.Components.Pages.Home;
 
@@ -30,6 +29,7 @@ builder.Services.AddScoped<SubCategoryRepository>();
 builder.Services.AddScoped<QuestionRepository>();
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<PromptRepository>();
+builder.Services.AddScoped<UserRepository>();
 
 
 
@@ -42,7 +42,7 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = new KeyManager().GetKey() ?? throw new ArgumentNullException("The specified path is not valid");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -62,21 +62,21 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin();
-        policy.AllowAnyHeader();
-        policy.AllowAnyMethod();
-    });
+   {
+       policy.AllowAnyOrigin();
+       policy.AllowAnyHeader();
+       policy.AllowAnyMethod();
+   });
 });
 //Adding admin role and admin user
 
-using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
-{
-    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
-    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
+//{
+//    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
+//    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    new RoleManager(signInManager, roleManager).InitialAdminAccount();
-}
+//    new RoleManager(signInManager, roleManager).InitialAdminAccount();
+//}
 
 var app = builder.Build();
 

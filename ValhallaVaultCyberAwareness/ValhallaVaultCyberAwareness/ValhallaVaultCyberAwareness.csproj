@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Pages\Categories\SubCategories\" />
+    <Folder Include="Components\Pages\aCategories\SubCategories\" />
   </ItemGroup>
 
 </Project>

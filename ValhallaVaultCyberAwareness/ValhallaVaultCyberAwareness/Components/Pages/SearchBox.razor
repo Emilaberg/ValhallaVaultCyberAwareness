@@ -7,9 +7,9 @@
 @rendermode InteractiveServer
 @attribute [StreamRendering]
 @* @inject MyProgressService ProgressService *@
-@inject NavigationManager NavigationManager
+@* @inject NavigationManager NavigationManager *@
 
-<ul>
+@* <ul>
     @foreach (var item in Items)
     {
         var route = item.Replace(" ", "");
@@ -31,32 +31,32 @@
     {
         <option value="@item"></option>
     }
-</datalist>
+</datalist> *@
 
 @code {
-    private string? Search { get; set; }
-    private List<string> Items { get; set; } = new List<string> { "Grundläggande IT-säkerhet", "Att skydda sig mot bedrägerier", "Cybersäkerhet för företag", "Cyberspionage" };
-    private string? SelectedItem { get; set; }
+    // private string? Search { get; set; }
+    // private List<string> Items { get; set; } = new List<string> { "Grundläggande IT-säkerhet", "Att skydda sig mot bedrägerier", "Cybersäkerhet för företag", "Cyberspionage" };
+    // private string? SelectedItem { get; set; }
 
-    private List<string> FilteredItems
-    {
-        get
-        {
-            return string.IsNullOrWhiteSpace(Search) ? Items : Items.Where(item => item.Contains(Search)).ToList();
-        }
-    }
+    // private List<string> FilteredItems
+    // {
+    //     get
+    //     {
+    //         return string.IsNullOrWhiteSpace(Search) ? Items : Items.Where(item => item.Contains(Search)).ToList();
+    //     }
+    // }
 
-    private void UpdateSelectedItem(ChangeEventArgs e)
-    {
-        SelectedItem = e.Value?.ToString();
-    }
+    // private void UpdateSelectedItem(ChangeEventArgs e)
+    // {
+    //     SelectedItem = e.Value?.ToString();
+    // }
 
-    private void NavigateToCategories()
-    {
-        if (!string.IsNullOrEmpty(SelectedItem))
-        {
-            var route = SelectedItem.Replace(" ", "");
-            NavigationManager.NavigateTo($"/{route}");
-        }
-    }
+    // private void NavigateToCategories()
+    // {
+    //     if (!string.IsNullOrEmpty(SelectedItem))
+    //     {
+    //         var route = SelectedItem.Replace(" ", "");
+    //         NavigationManager.NavigateTo($"/{route}");
+    //     }
+    // }
 }

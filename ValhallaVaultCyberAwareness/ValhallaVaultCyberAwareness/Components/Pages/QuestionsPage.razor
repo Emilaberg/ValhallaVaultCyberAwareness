@@ -1,0 +1,102 @@
+﻿@page "/questions/{subCategoryId:int}"
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
+@* @using System.Text.Json *@
+@using ValhallaVaultCyberAwareness.Data.Models
+@using ValhallaVaultCyberAwareness.Repositories
+@inject QuestionRepository QuestionRepo
+@inject PromptRepository PromptRepo
+@inject SubCategoryRepository SubCategoryRepo
+@inject IValhallaUow Uow
+@inject UserRepository UserRepo
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@* @inject ILogger<FrågeSida> Logger *@
+@inject NavigationManager NavigationManager
+
+<h3>FrågeSida</h3>
+
+@if (currentQuestion == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <h4>@currentQuestion.Question</h4>
+    <p>Number of prompts: @currentQuestion.Prompts.Count</p>
+    @foreach (var prompt in currentQuestion.Prompts)
+    {
+        <button type="submit" class="btn btn-transparent text-light" @onclick=" async () => await AnswerQuestion(prompt)">@prompt.Prompt</button>
+    }
+    @if (isAnswered)
+    {
+        <p>The answer is @((isCorrect) ? "correct" : "incorrect")</p>
+    }
+    <h1> bös </h1>
+}
+
+
+
+@code {
+    [Parameter]
+    public int subCategoryId { get; set; }
+    private QuestionModel currentQuestion;
+    private List<QuestionModel> questions;
+    private bool isAnswered = false;
+    private bool isCorrect = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadQuestion();
+    }
+
+    private async Task LoadQuestion()
+    {
+        if (questions == null || !questions.Any())
+        {
+            questions = await QuestionRepo.GetQuestionBySubCategory(subCategoryId);
+        }
+
+        currentQuestion = questions.FirstOrDefault();
+        if (currentQuestion != null)
+        {
+            // Remove the current question from the list so it won't be loaded again
+            questions.Remove(currentQuestion);
+        }
+        else
+        {
+            // Check if the next subcategory exists
+            var nextSubCategory = await SubCategoryRepo.GetSubCategoryById(subCategoryId + 1);
+            if (nextSubCategory != null)
+            {
+                // If it exists, navigate to the next subcategory
+                NavigationManager.NavigateTo($"/frageSida/{subCategoryId + 1}");
+            }
+            else
+            {
+                // Handle the case when the next subcategory does not exist
+                // For example, navigate to a default page
+                NavigationManager.NavigateTo("/defaultPage");
+            }
+        }
+    }
+
+    private async Task AnswerQuestion(PromptModel prompt)
+    {
+        isAnswered = true;
+        isCorrect = prompt.IsCorrect;
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userId = authState.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+        var userAnswer = new ApplicationUserQuestionModel
+            {
+                ApplicationUserId = userId,
+                QuestionModelId = currentQuestion.Id,
+                IsCorrectlyAnswered = isCorrect
+            };
+
+        await UserRepo.SaveUserAnswer(userAnswer);
+
+        await LoadQuestion();
+    }
+}

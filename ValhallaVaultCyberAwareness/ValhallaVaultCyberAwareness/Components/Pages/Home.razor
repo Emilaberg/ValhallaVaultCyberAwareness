@@ -13,35 +13,134 @@
     <h1>Hello!</h1>
 </div>
 
+
+
 <p>
     Welcome to your new Valhalla Vault Cyber Awareness Training Portal.
     <br />
     These are the different subjects you can learn about:
 </p>
 
-<SearchBox />
+<div>
+    <label for="categoryDropdown">Select a Category:</label>
+    <select id="categoryDropdown" @onchange="OnCategoryChange">
+        <option value="">-- Select Category --</option>
+        @if (categories != null)
+        {
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.CategoryName</option>
+            }
+        }
+    </select>
+</div>
 
-@if (categories != null)
+@if (selectedCategory != null)
 {
-    foreach (var category in categories)
+    <div>
+        <label for="segmentDropdown">Select a Segment:</label>
+        <select id="segmentDropdown" @onchange="OnSegmentChange">
+            <option value="">-- Select Segment --</option>
+            @foreach (var segment in selectedCategory.Segments)
+            {
+                <option value="@segment.Id">@segment.SegmentName</option>
+            }
+        </select>
+    </div>
+}
+
+@if (selectedSegment != null)
+{
+    <div>
+        <label for="subcategoryDropdown">Select a Subcategory:</label>
+        <select id="subcategoryDropdown" @onchange="OnSubcategoryChange">
+            <option value="">-- Select Subcategory --</option>
+            @foreach (var subcategory in selectedSegment.SubCategory)
+            {
+                <option value="@subcategory.Id">@subcategory.SubCategoryName</option>
+            }
+        </select>
+    </div>
+    @if (selectedSubcategory != null)
     {
         <div>
-            <h2>@category.CategoryName</h2>
-            <p>Progress: @category.Segments.Count(s => s.SubCategory.All(sc => sc.IsCompleted)) / @category.Segments.Count</p>
-            <button @onclick="() => NavigateToQuiz(category.Id)">Start Quiz</button>
+            <button type=submit @onclick="NavigateToFrageSida">Go to FrageSida</button>
         </div>
     }
 }
 
 @code {
-    private List<CategoryModel>? categories;
+    private List<PromptModel> prompts;
+    private List<CategoryModel> categories;
+    private CategoryModel selectedCategory;
+    private SegmentModel selectedSegment;
+    private SubCategoryModel selectedSubcategory;
+
     protected override async Task OnInitializedAsync()
     {
         categories = await Uow.CategoryRepo.GetAllCategoriesWithSegmentsAndSubCategories();
+        prompts = await Uow.PromptRepo.GetAllPrompts();
     }
 
-    private void NavigateToQuiz(int categoryId)
+
+    private void OnCategoryChange(ChangeEventArgs e)
     {
-        NavigationManager.NavigateTo($"/frageSida/{categoryId}");
+        var categoryId = int.Parse(e.Value.ToString());
+        selectedCategory = categories.FirstOrDefault(c => c.Id == categoryId);
+        // selectedSegment = null;
+        // selectedSubcategory = null;
     }
+
+    private void OnSegmentChange(ChangeEventArgs e)
+    {
+        var segmentId = int.Parse(e.Value.ToString());
+        selectedSegment = selectedCategory?.Segments.FirstOrDefault(s => s.Id == segmentId);
+        // selectedSubcategory = null;
+    }
+
+    private void OnSubcategoryChange(ChangeEventArgs e)
+    {
+        var subcategoryId = int.Parse(e.Value.ToString());
+        selectedSubcategory = selectedSegment?.SubCategory.FirstOrDefault(s => s.Id == subcategoryId);
+    }
+
+    private void NavigateToFrageSida()
+    {
+        if (selectedSubcategory != null)
+        {
+            NavigationManager.NavigateTo($"/questions/{selectedSubcategory.Id}");
+        }
+    }
+}
+
+
+
+
+@* seasrch och  %!!! <input id="searchBox" name="searchBox" type="text" @oninput="@(e => { searchTerm = e.Value.ToString(); SearchCategories(); })" placeholder="Search for a category..." /> *@
+
+
+
+
+
+
+
+    @* // private int GetCompletedPercentage(CategoryModel category)
+    // {
+    //     var totalSubCategories = category.Segments.SelectMany(s => s.SubCategory).Count();
+    //     var completedSubCategories = category.Segments.SelectMany(s => s.SubCategory).Count(sc => sc.IsCompleted);
+
+    //     return totalSubCategories > 0 ? (completedSubCategories * 100) / totalSubCategories : 0;
+    // }
+
+    // private void SearchCategories()
+    // {
+    //     if (string.IsNullOrWhiteSpace(searchTerm))
+    //     {
+    //         filteredCategories = categories;
+    //     }
+    //     else
+    //     {
+    //         filteredCategories = categories.Where(c => !string.IsNullOrEmpty(c.CategoryName) && c.CategoryName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+    //     }
+    // } *@
 }
