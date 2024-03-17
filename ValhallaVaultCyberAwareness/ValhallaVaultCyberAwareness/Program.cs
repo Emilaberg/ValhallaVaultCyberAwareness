@@ -5,6 +5,10 @@ using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
 using ValhallaVaultCyberAwareness.Components.Middleware;
 using ValhallaVaultCyberAwareness.Data;
+
+using ValhallaVaultCyberAwareness.Data.Managers;
+
+
 using ValhallaVaultCyberAwareness.Repositories;
 
 

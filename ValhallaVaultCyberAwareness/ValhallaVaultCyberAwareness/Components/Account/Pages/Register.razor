@@ -18,34 +18,39 @@
 
 <PageTitle>Register</PageTitle>
 
-<div class="container">
-    <div class="col-md-4">
-        <h1>Register</h1>
-        <div class="row">
-            <div class="col">
-                <StatusMessage Message="@Message" />
-                <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-                    <DataAnnotationsValidator />
-                    <h2 class="text-center align-middle">Create a new account.</h2>
-                    <hr />
-                    <ValidationSummary class="text-danger" role="alert" />
-                    <div class="form-floating mb-3">
-                        <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                        <label for="email">Email</label>
-                        <ValidationMessage For="() => Input.Email" class="text-danger" />
-                    </div>
-                    <div class="form-floating mb-3">
-                        <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                        <label for="password">Password</label>
-                        <ValidationMessage For="() => Input.Password" class="text-danger" />
-                    </div>
-                    <div class="form-floating mb-3">
-                        <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                        <label for="confirm-password">Confirm Password</label>
-                        <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-                    </div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-                </EditForm>
+<div class="video-background">
+    <video autoplay muted loop id="video-bg">
+        <source src="images/Bakrund.mp4" type="video/mp4">
+    </video>
+    <div class="container">
+        <div class="col-md-4">
+            <h1>Register</h1>
+            <div class="row">
+                <div class="col">
+                    <StatusMessage Message="@Message" />
+                    <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+                        <DataAnnotationsValidator />
+                        <h2 class="text-center align-middle">Create a new account.</h2>
+                        <hr />
+                        <ValidationSummary class="text-danger" role="alert" />
+                        <div class="form-floating mb-3">
+                            <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            <label for="email">Email</label>
+                            <ValidationMessage For="() => Input.Email" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                            <label for="password">Password</label>
+                            <ValidationMessage For="() => Input.Password" class="text-danger" />
+                        </div>
+                        <div class="form-floating mb-3">
+                            <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                            <label for="confirm-password">Confirm Password</label>
+                            <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+                        </div>
+                        <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+                    </EditForm>
+                </div>
             </div>
         </div>
     </div>
@@ -143,29 +148,48 @@
 
 <style>
     body {
-        background-color: gray;
         margin: 0;
         padding: 0;
         font-family: copperplate, papyrus, fantasy;
-        /* font-family: copperplate, papyrus, fantasy; */
+    }
+
+    .video-background {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    #video-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        width: 80%; 
+        max-width: 600px; 
     }
-    .container > div {
+
+        .container > div {
             border: 2px solid #000;
-    }
+        }
 
     h1 {
         text-align: center;
+        color: white;
     }
 
     .col-md-4 {
-        background-color: lightblue;
+        background-color: transparent;
         padding: 20px;
         border-radius: 10px;
         width: 600px;
@@ -174,5 +198,6 @@
     h2 {
         text-align: center;
         margin-top: 0;
+        color: white;
     }
 </style>
