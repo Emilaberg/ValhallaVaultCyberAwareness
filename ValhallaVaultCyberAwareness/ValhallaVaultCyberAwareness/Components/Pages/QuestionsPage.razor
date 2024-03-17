@@ -13,7 +13,7 @@
 @* @inject ILogger<FrågeSida> Logger *@
 @inject NavigationManager NavigationManager
 
-<h3>FrågeSida</h3>
+@* <h3>FrågeSida</h3>
 
 @if (currentQuestion == null)
 {
@@ -32,7 +32,7 @@ else
         <p>The answer is @((isCorrect) ? "correct" : "incorrect")</p>
     }
     <h1> bös </h1>
-}
+} *@
 
 
 
@@ -69,13 +69,13 @@ else
             if (nextSubCategory != null)
             {
                 // If it exists, navigate to the next subcategory
-                NavigationManager.NavigateTo($"/frageSida/{subCategoryId + 1}");
+                NavigationManager.NavigateTo($"/questionss/{subCategoryId + 1}");
             }
             else
             {
                 // Handle the case when the next subcategory does not exist
                 // For example, navigate to a default page
-                NavigationManager.NavigateTo("/defaultPage");
+                NavigationManager.NavigateTo("/Home");
             }
         }
     }
