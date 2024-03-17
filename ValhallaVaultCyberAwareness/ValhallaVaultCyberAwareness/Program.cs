@@ -6,7 +6,6 @@ using ValhallaVaultCyberAwareness.Components.Account;
 using ValhallaVaultCyberAwareness.Components.Middleware;
 using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Repositories;
-//using static ValhallaVaultCyberAwareness.Components.Pages.Home;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +23,9 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddScoped<IValhallaUow, ValhallaUow>();
-//builder.Services.AddScoped<MyProgressService>();
+
+//Dessa bör inte användas utan det är vårt uow som sköter det. uow innehåller alla repos.
+//vi låter det ligga kvar för att inte förstöra kod som bygger på att dessa finns med.
 builder.Services.AddScoped<SegmentRepository>();
 builder.Services.AddScoped<SubCategoryRepository>();
 builder.Services.AddScoped<QuestionRepository>();
@@ -101,18 +102,6 @@ else
     app.UseHsts();
 }
 
-app.UseMiddleware<CustomMiddleware>(); // Custom middleware
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.Run();
-
 
 app.UseHttpsRedirection();
 
@@ -130,5 +119,7 @@ app.MapControllers();
 
 app.UseCors("AllowAll");
 
+//samis middleware
+//app.UseMiddleware<CustomMiddleware>(); // Custom middleware
 app.Run();
 

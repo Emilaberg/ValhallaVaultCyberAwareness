@@ -10,6 +10,16 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
+    <Compile Remove="Components\Pages\Categories\**" />
+    <Compile Remove="Data\Models\Managers\**" />
+    <Content Remove="Components\Pages\Categories\**" />
+    <Content Remove="Data\Models\Managers\**" />
+    <EmbeddedResource Remove="Components\Pages\Categories\**" />
+    <EmbeddedResource Remove="Data\Models\Managers\**" />
+    <None Remove="Components\Pages\Categories\**" />
+    <None Remove="Data\Models\Managers\**" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ValhallaVaultCyberAwareness.Client\ValhallaVaultCyberAwareness.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0" />
@@ -20,12 +30,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Components\Pages\Categories\SubCategories\" />
-    <Folder Include="Data\Models\Managers\" />
   </ItemGroup>
 
   <ItemGroup>
