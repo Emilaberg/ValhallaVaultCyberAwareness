@@ -43,7 +43,11 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = new KeyManager().GetKey() ?? throw new ArgumentNullException("The specified path is not valid");
+//Denna användes när vi hade vår azure databas uppe. just nu är den inte igång så därför skapar vi en ny databas lokalt istället
+//var connectionString = new KeyManager().GetKey() ?? throw new ArgumentNullException("The specified path is not valid");
+
+var connectionString = builder.Configuration.GetConnectionString("DbConnection") ?? throw new ArgumentNullException("The specified path is not valid");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
