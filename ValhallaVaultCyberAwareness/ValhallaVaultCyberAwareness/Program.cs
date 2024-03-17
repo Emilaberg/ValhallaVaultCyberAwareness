@@ -3,12 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
-using ValhallaVaultCyberAwareness.Components.Middleware;
 using ValhallaVaultCyberAwareness.Data;
 
 using ValhallaVaultCyberAwareness.Data.Managers;
-
-
+using ValhallaVaultCyberAwareness.Data.Middleware;
 using ValhallaVaultCyberAwareness.Repositories;
 
 
