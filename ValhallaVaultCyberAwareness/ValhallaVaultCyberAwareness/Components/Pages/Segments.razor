@@ -1,0 +1,57 @@
+﻿@using ValhallaVaultCyberAwareness.Repositories
+@using ValhallaVaultCyberAwareness.Data.Models
+@using ValhallaVaultCyberAwareness.Data
+@using ValhallaVaultCyberAwareness.Components.Pages
+@inject IValhallaUow Uow
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+@page "/segment/{segmentId:int}"
+
+<h3>Segments</h3>
+
+@if (segments == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @foreach (var segment in segments)
+    {
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">@segment.SegmentName</h5>
+                <p class="card-text">Some information about this category...</p>
+                @* <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: @GetCategoryProgress(category)%;" aria-valuenow="@GetCategoryProgress(category)" aria-valuemin="0" aria-valuemax="100">@GetCategoryProgress(category)%</div>
+                </div> *@
+                <button class="btn btn-primary" @onclick="() => GoToSubCategoryPage(segment.Id)">Go to Subcategory</button>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public int segmentId { get; set; }
+
+    private List<SegmentModel> segments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        segments = await Uow.SegmentRepo.GetAllSegments();
+    }
+
+    private int GetCategoryProgress(SegmentModel segment)
+    {
+        // Calculate the progress for the category
+        // This is a placeholder implementation, replace it with your actual logic
+        return 50;
+    }
+
+    private void GoToSubCategoryPage(int subcategoryId)
+    {
+        NavigationManager.NavigateTo($"subcategory/{subcategoryId}");
+    }
+
+}
