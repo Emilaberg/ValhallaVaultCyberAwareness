@@ -6,7 +6,8 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
-<h1 class="mt-4 text-light text-center">Admin OverView</h1>
+<h1 class="mt-4 text-light text-center">Admin OverView </h1>
+<button class="btn btn-outline-light" @onclick="NavigateToAdd">Go to Add</button>
 
 @if (categories == null)
 {
@@ -14,7 +15,7 @@
 }
 else
 {
-
+    //Load cards with categories, segments, subcategories and questions
     <div class="row ">
         @foreach (var category in categories)
         {
@@ -22,6 +23,7 @@ else
             <div class="col-md-12 mb-4 bg-black">
                 <div class="card bg-black text-light">
                     <div class="card-body text-center">
+                        <!--Make Text a button to show Modal-->
                         <button class="btn btn-transparent text-light btn-lg mb-3" @onclick="() => OpenEditModal(category)">
                             <h1 class="card-title">@category.CategoryName</h1>
                         </button>
@@ -29,7 +31,7 @@ else
                             @foreach (var segment in category.Segments)
                             {
                                 <div class="col-md-4 bg-black my-3">
-
+                                    <!--Make Text a button to show Modal-->
                                     <button class="btn btn-outline-transparent text-light mb-3" @onclick="() => OpenEditModal(segment)">
                                         <h2 class="card-title">@segment.SegmentName</h2>
                                     </button>
@@ -37,10 +39,12 @@ else
                                         @foreach (var subCategory in segment.SubCategory)
                                         {
                                             <div class="d-flex col-12 align-items-center">
+                                                <!--open modal when clicked-->
                                                 <button type="button" class="btn btn-outline-light btn-lg flex-grow-1" @onclick="() => OpenEditModal(subCategory)">@subCategory.SubCategoryName</button>
                                                 <button type="button" class="btn btn-outline-light dropdown-toggle dropdown-toggle-split btn-lg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <span class="sr-only"></span>
                                                 </button>
+                                                <!--bootstrap Dropdaown menu using js-->
                                                 <div class="dropdown-menu">
                                                     @foreach (var question in subCategory.Questions)
                                                     {
@@ -59,7 +63,7 @@ else
         }
     </div>
 }
-
+<!--open Modal based on which button is clicked-->
 @if (selectedSubCategory != null)
 {
     <div class="modal show" tabindex="-1" role="dialog" style="display: block;">
@@ -69,7 +73,10 @@ else
                     <h5 class="modal-title">Edit Subcategory</h5>
                 </div>
                 <div class="modal-body">
+                    <!--edit form vit validation and error handling-->
                     <EditForm Model="selectedSubCategory" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
                         <div class="mb-3">
                             <label>Choose segment:</label>
                             <InputSelect @bind-Value="selectedSubCategory.SegmentId" class="form-select">
@@ -80,7 +87,6 @@ else
                                 }
                             </InputSelect>
                         </div>
-                        <DataAnnotationsValidator />
                         <div class="mb-3">
                             <label class="form-label" for="subCategoryName">Subcategory Name:</label>
                             <InputText class="form-control" id="subCategoryName" @bind-Value="selectedSubCategory.SubCategoryName" />
@@ -99,7 +105,7 @@ else
             </div>
         </div>
     </div>
-
+    <!--Another modal for verifying Deletes, this time implementing JS to display / hide -->
     <div class="modal" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -126,8 +132,10 @@ else
                     <h5 class="modal-title">Edit Category</h5>
                 </div>
                 <div class="modal-body bg-dark ">
+                    <!--edit form vit validation and error handling-->
                     <EditForm Model="selectedCategory" OnValidSubmit="HandleValidSubmit">
                         <DataAnnotationsValidator />
+                        <ValidationSummary />
                         <div class="mb-3">
                             <label class="form-label" for="categoryName">Category Name:</label>
                             <InputText class="form-control" id="categoryName" @bind-Value="selectedCategory.CategoryName" />
@@ -146,7 +154,7 @@ else
             </div>
         </div>
     </div>
-
+    <!--Another modal for verifying Deletes, this time implementing JS to display / hide -->
     <div class="modal" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -157,7 +165,7 @@ else
                     <p>Are you sure you want to delete </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @onclick="() => DeleteItem(selectedCategory)">Yes</button>
+                    <button type="button" class="btn btn-secondary" @onclick="() => DeleteItem(selectedCategory)" data-dismiss="modal">Yes</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                 </div>
             </div>
@@ -173,8 +181,10 @@ else
                     <h5 class="modal-title">Edit Category</h5>
                 </div>
                 <div class="modal-body bg-dark ">
+                    <!--edit form vit validation and error handling-->
                     <EditForm Model="selectedQuestion" OnValidSubmit="HandleValidSubmit">
                         <DataAnnotationsValidator />
+                        <ValidationSummary />
                         <div class="mb-3">
                             <label class="form-label" for="question">Question:</label>
                             <InputText class="form-control" id="question" @bind-Value="selectedQuestion.Question" />
@@ -209,7 +219,7 @@ else
             </div>
         </div>
     </div>
-
+    <!--Another modal for verifying Deletes, this time implementing JS to display / hide -->
     <div class="modal" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -240,7 +250,10 @@ else
                     </h5>
                 </div>
                 <div class="modal-body bg-dark ">
+                    <!--edit form vit validation and error handling-->
                     <EditForm Model="selectedSegment" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
                         <div class="mb-3">
                             <label>Choose segment:</label>
                             <InputSelect @bind-Value="selectedSegment.CategoryId" class="form-select">
@@ -251,7 +264,6 @@ else
                                 }
                             </InputSelect>
                         </div>
-                        <DataAnnotationsValidator />
                         <div class="mb-3">
                             <label class="form-label" for="segmentName">
                                 Category
@@ -262,7 +274,6 @@ else
                             <button class="btn btn-outline-light" type="button" data-toggle="modal" data-target="#confirmationModal">
                                 Delete
                             </button>
-                            <ValidationMessage For="@(() => selectedSegment.SegmentName)" />
                         </div>
                         <div class="text-end">
                             <button class="btn btn-outline-light" type="submit">
@@ -279,7 +290,7 @@ else
             </div>
         </div>
     </div>
-
+    <!--Another modal for verifying Deletes, this time implementing JS to display / hide -->
     <div class="modal" id="confirmationModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -308,8 +319,8 @@ else
 
 
 @code {
-    private List<CategoryModel> categories = [];
-    private List<SegmentModel> segments = [];
+    private List<CategoryModel>? categories = [];
+    private List<SegmentModel>? segments = [];
 
 
 
@@ -328,75 +339,63 @@ else
     }
     //open modal for edits based on the Object passed to the method
     private void OpenEditModal(object item)
-
     {
-        if (item is CategoryModel category)
+        //switch case for opening modal based on item
+        switch (item)
         {
-            selectedCategory = category;
-        }
-        else if (item is SubCategoryModel subCategory)
-        {
-            selectedSubCategory = subCategory;
+            case CategoryModel category:
+                selectedCategory = category;
+                break;
 
-        }
-        else if (item is SegmentModel segment)
-        {
-            selectedSegment = segment;
-        }
+            case SubCategoryModel subCategory:
+                selectedSubCategory = subCategory;
+                break;
 
-        else if (item is QuestionModel question)
-        {
-            selectedQuestion = question;
+            case SegmentModel segment:
+                selectedSegment = segment;
+                break;
 
+            case QuestionModel question:
+                selectedQuestion = question;
+                break;
+
+            default:
+                break;
         }
     }
     //delete based on whicg object is passed to the method
     private async Task DeleteItem(object item)
     {
-        if (item is CategoryModel category)
+        //switch case checking which item to delete
+        switch (item)
         {
-            selectedCategory = category;
-            if (selectedCategory != null)
-            {
+            case CategoryModel category when category != null:
+                selectedCategory = category;
                 await _uow.CategoryRepo.DeleteCategory(selectedCategory.Id);
-            }
-        }
-        else if (item is SubCategoryModel subCategory)
-        {
-            selectedSubCategory = subCategory;
+                NavigationManager.NavigateTo(NavigationManager.ToBaseRelativePath(NavigationManager.Uri), true);
+                break;
 
-            if (selectedSubCategory != null)
-            {
+            case SubCategoryModel subCategory when subCategory != null:
+                selectedSubCategory = subCategory;
                 await _uow.SubCategoryRepo.DeleteSubCategory(selectedSubCategory.Id);
-            }
-        }
-        else if (item is SegmentModel segment)
-        {
-            selectedSegment = segment;
+                break;
 
-            if (selectedSegment != null)
-            {
+            case SegmentModel segment when segment != null:
+                selectedSegment = segment;
                 await _uow.SegmentRepo.DeleteSegment(selectedSegment.Id);
-            }
-        }
+                break;
 
-        else if (item is QuestionModel question)
-        {
-            selectedQuestion = question;
-
-            if (selectedQuestion != null)
-            {
+            case QuestionModel question when question != null:
+                selectedQuestion = question;
                 await _uow.QuestionRepo.DeleteQuestion(selectedQuestion.Id);
-            }
+                break;
 
-        }
-
-        else if (item is PromptModel prompt)
-        {
-            if (prompt != null)
-            {
+            case PromptModel prompt when prompt != null:
                 await _uow.PromptRepo.DeletePrompt(prompt.Id);
-            }
+                break;
+
+            default:
+                break;
         }
 
         ClearSelected();
@@ -438,6 +437,10 @@ else
         }
         ClearSelected();
         NavigationManager.NavigateTo(NavigationManager.ToBaseRelativePath(NavigationManager.Uri), true);
+    }
+    private void NavigateToAdd()
+    {
+        NavigationManager.NavigateTo("admin/add");
     }
 
 

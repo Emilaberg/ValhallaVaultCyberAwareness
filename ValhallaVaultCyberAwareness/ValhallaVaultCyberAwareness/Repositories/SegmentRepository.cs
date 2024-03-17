@@ -2,7 +2,7 @@
 using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Models;
 
-namespace valhaValhallaVaultCyberAwarenessllaTest.Repositories
+namespace ValhallaVaultCyberAwareness.Repositories
 {
     public class SegmentRepository
     {

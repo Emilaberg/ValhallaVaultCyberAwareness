@@ -1,6 +1,4 @@
-﻿using valhaValhallaVaultCyberAwarenessllaTest.Repositories;
-
-namespace ValhallaVaultCyberAwareness.Repositories
+﻿namespace ValhallaVaultCyberAwareness.Repositories
 {
     public interface IValhallaUow
     {
