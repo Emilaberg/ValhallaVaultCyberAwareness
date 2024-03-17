@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
+using ValhallaVaultCyberAwareness.Components.Middleware;
 using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Repositories;
 //using static ValhallaVaultCyberAwareness.Components.Pages.Home;
@@ -29,6 +30,8 @@ builder.Services.AddScoped<SubCategoryRepository>();
 builder.Services.AddScoped<QuestionRepository>();
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<PromptRepository>();
+builder.Services.AddScoped<UserRepository>();
+
 
 
 
@@ -65,11 +68,11 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin();
-        policy.AllowAnyHeader();
-        policy.AllowAnyMethod();
-    });
+   {
+       policy.AllowAnyOrigin();
+       policy.AllowAnyHeader();
+       policy.AllowAnyMethod();
+   });
 });
 //Adding admin role and admin user
 
@@ -98,6 +101,18 @@ else
     app.UseHsts();
 }
 
+app.UseMiddleware<CustomMiddleware>(); // Custom middleware
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
+
 
 app.UseHttpsRedirection();
 
@@ -116,3 +131,4 @@ app.MapControllers();
 app.UseCors("AllowAll");
 
 app.Run();
+
