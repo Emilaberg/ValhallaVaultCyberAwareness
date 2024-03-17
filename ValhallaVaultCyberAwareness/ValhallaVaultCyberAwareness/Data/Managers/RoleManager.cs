@@ -31,7 +31,7 @@ namespace ValhallaVaultCyberAwareness.Data.Managers
             if (user == null) //finns det inte så vill jag lägga till användaren i databasen 
             {
 
-                signInManager.UserManager.CreateAsync(admin, "Password1!").GetAwaiter().GetResult();
+                signInManager.UserManager.CreateAsync(admin, "Password1234!").GetAwaiter().GetResult();
 
 
                 bool roleExits = roleManager.RoleExistsAsync("Admin").GetAwaiter().GetResult();
@@ -50,7 +50,29 @@ namespace ValhallaVaultCyberAwareness.Data.Managers
                 signInManager.UserManager.AddToRoleAsync(admin, "Admin").GetAwaiter().GetResult();
             }
         }
+        //inte awaitable för det ska inte vara det i program.cs right? //emil
+        /// <summary>
+        /// Creates a member account with default mail and password
+        /// </summary>
+        public void InitialMemberAccount()
+        {
+            ApplicationUser member = new()
+            {
+                UserName = "user@mail.com",
+                Email = "user@mail.com",
+                EmailConfirmed = true
+            };
 
-        
+            var user = signInManager.UserManager.FindByEmailAsync(member.Email).GetAwaiter().GetResult();
+            //sen vill jag kolla om användaren finns i databasen 
+            if (user == null) //finns det inte så vill jag lägga till användaren i databasen 
+            {
+
+                signInManager.UserManager.CreateAsync(member, "Password1234!").GetAwaiter().GetResult();
+            }
+
+        }
     }
+
+    
 }
