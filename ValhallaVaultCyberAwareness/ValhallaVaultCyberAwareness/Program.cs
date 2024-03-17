@@ -4,7 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
 using ValhallaVaultCyberAwareness.Data;
+
 using ValhallaVaultCyberAwareness.Data.Managers;
+
+
 using ValhallaVaultCyberAwareness.Repositories;
 //using static ValhallaVaultCyberAwareness.Components.Pages.Home;
 
@@ -42,7 +45,11 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = new KeyManager().GetKey() ?? throw new ArgumentNullException("The specified path is not valid");
+//används ej längre då denna hämtade key från lokala datorn för att koppla till azure databasen, nu kör vi lokala databasen istället
+//var connectionString = new KeyManager().GetKey() ?? throw new ArgumentNullException("The specified path is not valid");
+
+var connectionString = builder.Configuration.GetConnectionString("DbConnection") ?? throw new ArgumentNullException("The specified path is not valid");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -70,13 +77,15 @@ builder.Services.AddCors(options =>
 });
 //Adding admin role and admin user
 
-using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
-{
-    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
-    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//Den här måste vara utkommenterad när man skapar database för första gången.
 
-    new RoleManager(signInManager, roleManager).InitialAdminAccount();
-}
+//using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
+//{
+//    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
+//    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+//    new RoleManager(signInManager, roleManager).InitialAdminAccount();
+//}
 
 var app = builder.Build();
 
