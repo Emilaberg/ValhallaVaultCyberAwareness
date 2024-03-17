@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
+using ValhallaVaultCyberAwareness.Components.Middleware;
 using ValhallaVaultCyberAwareness.Data;
+
 using ValhallaVaultCyberAwareness.Data.Managers;
-using ValhallaVaultCyberAwareness.Data.Middleware;
+
+
 using ValhallaVaultCyberAwareness.Repositories;
-//using static ValhallaVaultCyberAwareness.Components.Pages.Home;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,12 +27,16 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddScoped<IValhallaUow, ValhallaUow>();
-//builder.Services.AddScoped<MyProgressService>();
+
+//Dessa bör inte användas utan det är vårt uow som sköter det. uow innehåller alla repos.
+//vi låter det ligga kvar för att inte förstöra kod som bygger på att dessa finns med.
 builder.Services.AddScoped<SegmentRepository>();
 builder.Services.AddScoped<SubCategoryRepository>();
 builder.Services.AddScoped<QuestionRepository>();
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<PromptRepository>();
+builder.Services.AddScoped<UserRepository>();
+
 
 
 
@@ -43,7 +49,7 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-//Denna användes när vi hade vår azure databas uppe. just nu är den inte igång så därför skapar vi en ny databas lokalt istället
+//används ej längre då denna hämtade key från lokala datorn för att koppla till azure databasen, nu kör vi lokala databasen istället
 //var connectionString = new KeyManager().GetKey() ?? throw new ArgumentNullException("The specified path is not valid");
 
 var connectionString = builder.Configuration.GetConnectionString("DbConnection") ?? throw new ArgumentNullException("The specified path is not valid");
@@ -67,20 +73,26 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin();
-        policy.AllowAnyHeader();
-        policy.AllowAnyMethod();
-    });
+   {
+       policy.AllowAnyOrigin();
+       policy.AllowAnyHeader();
+       policy.AllowAnyMethod();
+   });
 });
 //Adding admin role and admin user
+
+//Den här måste vara utkommenterad när man skapar database för första gången.
 
 using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
 {
     var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    new RoleManager(signInManager, roleManager).InitialAdminAccount();
+    RoleManager createRoleManager = new RoleManager(signInManager, roleManager);
+    createRoleManager.InitialAdminAccount();
+
+    //lade till så att det skapas en member också när man startar appen, samma logik som för admin account. kolla Rolemanager för credentials albin //Emil
+    createRoleManager.InitialMemberAccount();
 }
 
 var app = builder.Build();
@@ -116,4 +128,7 @@ app.MapControllers();
 app.UseCors("AllowAll");
 app.UseMiddleware<IpLoggerMiddleware>();
 
+//samis middleware
+//app.UseMiddleware<CustomMiddleware>(); // Custom middleware
 app.Run();
+

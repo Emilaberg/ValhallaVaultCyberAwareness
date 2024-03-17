@@ -11,6 +11,11 @@ namespace ValhallaVaultCyberAwareness.Data.Managers
             this.signInManager = signInManager;
             this.roleManager = roleManager;
         }
+        /// <summary>
+        /// Här kan man öka på med flera metoder för att skapa användare, t.ex så kan vi lägga in en metod här som skapar x antal användare med olika roller.
+        //  detta hade varit nice att implementera för då behöver vi inte lägga massa kod i program.cs för att skapa användare utan det ligger här istället. 
+        //  hade vi haft mer tid kunde vi lagt en sådan metod här.//Emil
+        /// </summary>
         public void InitialAdminAccount()
         {
             //skapa en admin användare
@@ -26,7 +31,7 @@ namespace ValhallaVaultCyberAwareness.Data.Managers
             if (user == null) //finns det inte så vill jag lägga till användaren i databasen 
             {
 
-                signInManager.UserManager.CreateAsync(admin, "Password1!").GetAwaiter().GetResult();
+                signInManager.UserManager.CreateAsync(admin, "Password1234!").GetAwaiter().GetResult();
 
 
                 bool roleExits = roleManager.RoleExistsAsync("Admin").GetAwaiter().GetResult();
@@ -45,5 +50,29 @@ namespace ValhallaVaultCyberAwareness.Data.Managers
                 signInManager.UserManager.AddToRoleAsync(admin, "Admin").GetAwaiter().GetResult();
             }
         }
+        //inte awaitable för det ska inte vara det i program.cs right? //emil
+        /// <summary>
+        /// Creates a member account with default mail and password
+        /// </summary>
+        public void InitialMemberAccount()
+        {
+            ApplicationUser member = new()
+            {
+                UserName = "user@mail.com",
+                Email = "user@mail.com",
+                EmailConfirmed = true
+            };
+
+            var user = signInManager.UserManager.FindByEmailAsync(member.Email).GetAwaiter().GetResult();
+            //sen vill jag kolla om användaren finns i databasen 
+            if (user == null) //finns det inte så vill jag lägga till användaren i databasen 
+            {
+
+                signInManager.UserManager.CreateAsync(member, "Password1234!").GetAwaiter().GetResult();
+            }
+
+        }
     }
+
+    
 }
