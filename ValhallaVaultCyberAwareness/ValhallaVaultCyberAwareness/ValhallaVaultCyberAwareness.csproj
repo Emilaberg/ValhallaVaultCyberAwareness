@@ -22,4 +22,14 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Components\Pages\Categories\SubCategories\" />
+    <Folder Include="Data\Models\Managers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Data\Models\Managers\" />
+  </ItemGroup>
+
 </Project>

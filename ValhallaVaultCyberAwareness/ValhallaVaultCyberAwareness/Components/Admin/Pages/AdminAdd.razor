@@ -1,0 +1,206 @@
+﻿@page "/Admin/Add"
+@using System.ComponentModel.DataAnnotations
+@using ValhallaVaultCyberAwareness.Data.Models
+@using ValhallaVaultCyberAwareness.Repositories
+@inject IValhallaUow _uow
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<h3 class="text-light text-center">AdminAdd</h3>
+
+<div class="row justify-content-center">
+    <div class="col-md-12 mb-4">
+        <div class="card bg-black text-light mx-auto">
+            <div class="card-body text-center">
+                <h1 class="card-title">Add Category</h1>
+                <EditForm Model="categoryToAdd" OnValidSubmit="HandleSubmit">
+                    <div class="row">
+                        <div class="col-md-6 mx-auto">
+                            <label class="text-sm">Category name:</label>
+                            <DataAnnotationsValidator />
+                            <InputText id="categoryname" @bind-Value="categoryToAdd.CategoryName" class="form-control"></InputText>
+                            <ValidationSummary></ValidationSummary>
+                        </div>
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-outline-dark text-light ">Add new Category</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second card -->
+    <div class="col-md-6 mb-4">
+        <div class="card bg-black text-light">
+            <div class="card-body text-center">
+                <h1 class="card-title">Add Segment</h1>
+                <EditForm Model="segmentToAdd" OnValidSubmit="HandleSubmit">
+                    <div class="row">
+                        <div class="col-md-6 mx-auto">
+                            <label class="text-sm">Segment name:</label>
+                            <DataAnnotationsValidator />
+                            <InputText id="segmentName" @bind-Value="segmentToAdd.SegmentName" class="form-control"></InputText>
+                            <ValidationSummary></ValidationSummary>
+                            <label class="text-sm">Choose category:</label>
+                            <InputSelect @bind-Value="segmentToAdd.CategoryId" class="form-select">
+                                <option value="">None</option>
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@category.Id">@category.CategoryName</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-outline-dark text-light ">Add new segment</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+    <!-- Third card -->
+    <div class="col-md-6 mb-4">
+        <div class="card bg-black text-light">
+            <div class="card-body text-center">
+                <h1 class="card-title">Add Subcategory</h1>
+                <EditForm Model="subCategoryToAdd" OnValidSubmit="HandleSubmit">
+                    <div class="row">
+                        <div class="col-md-6 mx-auto">
+                            <label class="text-sm">Subcategory name:</label>
+                            <DataAnnotationsValidator />
+                            <InputText id="segmentName" @bind-Value="subCategoryToAdd.SubCategoryName" class="form-control"></InputText>
+                            <ValidationSummary></ValidationSummary>
+                            <label class="text-sm">Choose Segment:</label>
+                            <InputSelect @bind-Value="subCategoryToAdd.SegmentId" class="form-select">
+                                <option value="">None</option>
+                                @foreach (var segment in segments)
+                                {
+                                    <option value="@segment.Id">@segment.SegmentName</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-outline-dark text-light ">Add new Subcategory</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+    <!-- Fourth card -->
+    <div class="col-md-6 mb-4">
+        <div class="card bg-black text-light">
+            <div class="card-body text-center">
+                <h1 class="card-title">Add Question</h1>
+                <EditForm Model="QuestionToAdd" OnValidSubmit="HandleSubmit">
+                    <div class="row">
+                        <div class="col-md-6 mx-auto">
+                            <label class="text-sm">Question:</label>
+                            <DataAnnotationsValidator />
+                            <InputText id="questionName" @bind-Value="QuestionToAdd.Question" class="form-control"></InputText>
+                            <ValidationSummary></ValidationSummary>
+                            <label class="text-sm">Explaination:</label>
+                            <InputText id="questionExplaination" @bind-Value="QuestionToAdd.Explaination" class="form-control"></InputText>
+                            <label class="text-sm">Choose Subcategory:</label>
+                            <InputSelect @bind-Value="QuestionToAdd.SubCategoryId" class="form-select">
+                                <option value="">None</option>
+                                @foreach (var subcategory in subcategories)
+                                {
+                                    <option value="@subcategory.Id">@subcategory.SubCategoryName</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-outline-dark text-light ">Add new Question</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+    <!-- Fifth card -->
+    <div class="col-md-6 mb-4">
+        <div class="card bg-black text-light">
+            <div class="card-body text-center">
+                <h1 class="card-title">Add Prompt</h1>
+                <EditForm Model="PromptToAdd" OnValidSubmit="HandleSubmit">
+                    <div class="row">
+                        <div class="col-md-6 mx-auto">
+                            <label class="text-sm">Prompt:</label>
+                            <DataAnnotationsValidator />
+                            <InputText id="prompt" @bind-Value="PromptToAdd.Prompt" class="form-control"></InputText>
+                            <ValidationSummary></ValidationSummary>
+                            <label class="text-sm">Choose question:</label>
+                            <InputSelect @bind-Value="PromptToAdd.QuestionId" class="form-select">
+                                <option value="">None</option>
+                                @foreach (var question in questions)
+                                {
+                                    <option value="@question.Id">@question.Question</option>
+                                }
+                            </InputSelect>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" @bind="PromptToAdd.IsCorrect" />
+                                <label class="form-check-label" for="isCorrect">
+                                    IsCorrect
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-outline-dark text-light ">Add prompt</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@code {
+    private CategoryModel categoryToAdd { get; set; } = new();
+    private SegmentModel segmentToAdd { get; set; } = new();
+    private SubCategoryModel subCategoryToAdd { get; set; } = new();
+    private QuestionModel QuestionToAdd { get; set; } = new();
+    private PromptModel PromptToAdd { get; set; } = new();
+
+    private List<CategoryModel> categories { get; set; } = [];
+    private List<SegmentModel> segments { get; set; } = [];
+    private List<QuestionModel> questions { get; set; } = [];
+    private List<SubCategoryModel> subcategories { get; set; } = [];
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await _uow.CategoryRepo.GetAllCategories();
+        segments = await _uow.SegmentRepo.GetAllSegments();
+        questions = await _uow.QuestionRepo.GetAllQuestions();
+        subcategories = await _uow.SubCategoryRepo.GetAllSubCategories();
+        base.OnInitialized();
+
+    }
+    private async void HandleSubmit()
+    {
+        if (!string.IsNullOrEmpty(categoryToAdd.CategoryName))
+        {
+            await _uow.CategoryRepo.AddCategory(categoryToAdd);
+        }
+        else if (!string.IsNullOrEmpty(segmentToAdd.SegmentName))
+        {
+            await _uow.SegmentRepo.AddSegment(segmentToAdd);
+        }
+        else if (!string.IsNullOrEmpty(subCategoryToAdd.SubCategoryName))
+        {
+            await _uow.SubCategoryRepo.AddSubCategory(subCategoryToAdd);
+        }
+        else if (!string.IsNullOrEmpty(QuestionToAdd.Question))
+        {
+            await _uow.QuestionRepo.AddQuestion(QuestionToAdd);
+        }
+        else if (!string.IsNullOrEmpty(PromptToAdd.Prompt))
+        {
+            await _uow.PromptRepo.AddPrompt(PromptToAdd);
+        }
+        NavigationManager.NavigateTo("admin/admin");
+
+    }
+}
