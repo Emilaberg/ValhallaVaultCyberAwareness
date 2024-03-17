@@ -3,15 +3,17 @@
 @rendermode InteractiveServer
 @attribute [StreamRendering]
 @inject NavigationManager NavigationManager
-@* @inject MyProgressService ProgressService *@
-@* @inject IValhallaUow Uow *@
+@inject IValhallaUow Uow
 @using ValhallaVaultCyberAwareness.Components.Pages
 @using ValhallaVaultCyberAwareness.Data
-@* @using static ValhallaVaultCyberAwareness.Repositories.IValhallaUow
- *@
+@using ValhallaVaultCyberAwareness.Data.Models
+@using ValhallaVaultCyberAwareness.Repositories
+
 <div>
     <h1>Hello!</h1>
 </div>
+
+
 
 <p>
     Welcome to your new Valhalla Vault Cyber Awareness Training Portal.
@@ -19,58 +21,126 @@
     These are the different subjects you can learn about:
 </p>
 
-<SearchBox />
+<div>
+    <label for="categoryDropdown">Select a Category:</label>
+    <select id="categoryDropdown" @onchange="OnCategoryChange">
+        <option value="">-- Select Category --</option>
+        @if (categories != null)
+        {
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.CategoryName</option>
+            }
+        }
+    </select>
+</div>
 
-@if (userProgress != null)
+@if (selectedCategory != null)
 {
-    foreach (var progress in userProgress)
+    <div>
+        <label for="segmentDropdown">Select a Segment:</label>
+        <select id="segmentDropdown" @onchange="OnSegmentChange">
+            <option value="">-- Select Segment --</option>
+            @foreach (var segment in selectedCategory.Segments)
+            {
+                <option value="@segment.Id">@segment.SegmentName</option>
+            }
+        </select>
+    </div>
+}
+
+@if (selectedSegment != null)
+{
+    <div>
+        <label for="subcategoryDropdown">Select a Subcategory:</label>
+        <select id="subcategoryDropdown" @onchange="OnSubcategoryChange">
+            <option value="">-- Select Subcategory --</option>
+            @foreach (var subcategory in selectedSegment.SubCategory)
+            {
+                <option value="@subcategory.Id">@subcategory.SubCategoryName</option>
+            }
+        </select>
+    </div>
+    @if (selectedSubcategory != null)
     {
-        <p>@progress.Key: @progress.Value%</p>
+        <div>
+            <button type=submit @onclick="NavigateToFrageSida">Go to the quizz!</button>
+        </div>
     }
 }
 
-@code{
-    private Dictionary<string, double>? userProgress;
+@code {
+    private List<PromptModel> prompts;
+    private List<CategoryModel> categories;
+    private CategoryModel selectedCategory;
+    private SegmentModel selectedSegment;
+    private SubCategoryModel selectedSubcategory;
 
-    // protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await Uow.CategoryRepo.GetAllCategoriesWithSegmentsAndSubCategories();
+        prompts = await Uow.PromptRepo.GetAllPrompts();
+    }
+
+
+    private void OnCategoryChange(ChangeEventArgs e)
+    {
+        var categoryId = int.Parse(e.Value.ToString());
+        selectedCategory = categories.FirstOrDefault(c => c.Id == categoryId);
+        // selectedSegment = null;
+        // selectedSubcategory = null;
+    }
+
+    private void OnSegmentChange(ChangeEventArgs e)
+    {
+        var segmentId = int.Parse(e.Value.ToString());
+        selectedSegment = selectedCategory?.Segments.FirstOrDefault(s => s.Id == segmentId);
+        // selectedSubcategory = null;
+    }
+
+    private void OnSubcategoryChange(ChangeEventArgs e)
+    {
+        var subcategoryId = int.Parse(e.Value.ToString());
+        selectedSubcategory = selectedSegment?.SubCategory.FirstOrDefault(s => s.Id == subcategoryId);
+    }
+
+    private void NavigateToFrageSida()
+    {
+        if (selectedSubcategory != null)
+        {
+            NavigationManager.NavigateTo($"/questions/{selectedSubcategory.Id}");
+        }
+    }
+}
+
+
+
+
+@* seasrch och  %!!! <input id="searchBox" name="searchBox" type="text" @oninput="@(e => { searchTerm = e.Value.ToString(); SearchCategories(); })" placeholder="Search for a category..." /> *@
+
+
+
+
+
+
+
+    @* // private int GetCompletedPercentage(CategoryModel category)
     // {
-    //     var userId = "YourUserId"; // Replace with actual user id
-    //     userProgress = await ProgressService.GetUserProgress(userId);
+    //     var totalSubCategories = category.Segments.SelectMany(s => s.SubCategory).Count();
+    //     var completedSubCategories = category.Segments.SelectMany(s => s.SubCategory).Count(sc => sc.IsCompleted);
+
+    //     return totalSubCategories > 0 ? (completedSubCategories * 100) / totalSubCategories : 0;
     // }
 
-    // public class MyProgressService
+    // private void SearchCategories()
     // {
-    //     private readonly ApplicationDbContext _context;
-
-    //     public MyProgressService(ApplicationDbContext context)
+    //     if (string.IsNullOrWhiteSpace(searchTerm))
     //     {
-    //         _context = context;
+    //         filteredCategories = categories;
     //     }
-
-    //     public async Task<Dictionary<string, double>> GetUserProgress(string userId)
+    //     else
     //     {
-    //         var progress = new Dictionary<string, double>();
-
-    //         var categories = await _context.SubCategories.ToListAsync();
-
-    //         foreach (var category in categories)
-    //         {
-    //             var totalQuestions = await _context.Questions
-    //                 .Where(q => q.SubCategoryId == category.Id)
-    //                 .CountAsync();
-
-    //             var answeredQuestions = await _context.Questions
-    //                 .Where(q => q.SubCategoryId == category.Id && q.ApplicationUsers.Any(u => u.Id == userId))
-    //                 .CountAsync();
-
-    //             if (totalQuestions > 0)
-    //             {
-    //                 var progressPercentage = (double)answeredQuestions / totalQuestions * 100;
-    //                 progress.Add(category.SubCategoryName ?? string.Empty, progressPercentage);
-    //             }
-    //         }
-
-    //         return progress;
+    //         filteredCategories = categories.Where(c => !string.IsNullOrEmpty(c.CategoryName) && c.CategoryName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
     //     }
-    // }
+    // } *@
 }

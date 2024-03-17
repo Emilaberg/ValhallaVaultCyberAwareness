@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
+using ValhallaVaultCyberAwareness.Components.Middleware;
 using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Repositories;
-//using static ValhallaVaultCyberAwareness.Components.Pages.Home;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,12 +23,16 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddScoped<IValhallaUow, ValhallaUow>();
-//builder.Services.AddScoped<MyProgressService>();
+
+//Dessa bör inte användas utan det är vårt uow som sköter det. uow innehåller alla repos.
+//vi låter det ligga kvar för att inte förstöra kod som bygger på att dessa finns med.
 builder.Services.AddScoped<SegmentRepository>();
 builder.Services.AddScoped<SubCategoryRepository>();
 builder.Services.AddScoped<QuestionRepository>();
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<PromptRepository>();
+builder.Services.AddScoped<UserRepository>();
+
 
 
 
@@ -65,11 +69,11 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin();
-        policy.AllowAnyHeader();
-        policy.AllowAnyMethod();
-    });
+   {
+       policy.AllowAnyOrigin();
+       policy.AllowAnyHeader();
+       policy.AllowAnyMethod();
+   });
 });
 //Adding admin role and admin user
 
@@ -115,4 +119,7 @@ app.MapControllers();
 
 app.UseCors("AllowAll");
 
+//samis middleware
+//app.UseMiddleware<CustomMiddleware>(); // Custom middleware
 app.Run();
+
