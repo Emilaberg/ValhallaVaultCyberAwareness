@@ -8,7 +8,6 @@ using ValhallaVaultCyberAwareness.Data;
 
 using ValhallaVaultCyberAwareness.Data.Managers;
 
-
 using ValhallaVaultCyberAwareness.Repositories;
 
 
@@ -124,6 +123,8 @@ app.MapRazorComponents<App>()
 app.MapAdditionalIdentityEndpoints();
 
 app.MapControllers();
+
+app.UseMiddleware<TimeMiddleware>();
 
 app.UseCors("AllowAll");
 
