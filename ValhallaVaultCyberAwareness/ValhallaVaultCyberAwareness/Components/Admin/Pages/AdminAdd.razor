@@ -176,10 +176,10 @@
     private QuestionModel QuestionToAdd { get; set; } = new();
     private PromptModel PromptToAdd { get; set; } = new();
 
-    private List<CategoryModel> categories { get; set; } = [];
-    private List<SegmentModel> segments { get; set; } = [];
-    private List<QuestionModel> questions { get; set; } = [];
-    private List<SubCategoryModel> subcategories { get; set; } = [];
+    private List<CategoryModel>? categories { get; set; } = [];
+    private List<SegmentModel>? segments { get; set; } = [];
+    private List<QuestionModel>? questions { get; set; } = [];
+    private List<SubCategoryModel>? subcategories { get; set; } = [];
 
 
     protected override async Task OnInitializedAsync()
