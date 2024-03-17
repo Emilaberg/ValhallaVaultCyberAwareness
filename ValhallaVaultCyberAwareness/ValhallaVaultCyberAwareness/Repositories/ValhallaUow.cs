@@ -1,4 +1,5 @@
 ﻿using ValhallaVaultCyberAwareness.Data;
+using valhaValhallaVaultCyberAwarenessllaTest.Repositories;
 
 namespace ValhallaVaultCyberAwareness.Repositories
 {
@@ -12,6 +13,8 @@ namespace ValhallaVaultCyberAwareness.Repositories
         public QuestionRepository QuestionRepo { get; }
 
         public PromptRepository PromptRepo { get; }
+        public UserRepository UserRepo { get; }
+
 
         private readonly ApplicationDbContext _context;
 
@@ -24,7 +27,7 @@ namespace ValhallaVaultCyberAwareness.Repositories
             SubCategoryRepo = new(context);
             QuestionRepo = new(context);
             PromptRepo = new(context);
-
+            UserRepo = new(context);
 
 
         }

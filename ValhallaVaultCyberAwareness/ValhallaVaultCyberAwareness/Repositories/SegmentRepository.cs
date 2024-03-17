@@ -2,7 +2,7 @@
 using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Data.Models;
 
-namespace ValhallaVaultCyberAwareness.Repositories
+namespace valhaValhallaVaultCyberAwarenessllaTest.Repositories
 {
     public class SegmentRepository
     {
@@ -11,62 +11,82 @@ namespace ValhallaVaultCyberAwareness.Repositories
         {
             _context = context;
         }
-        public async Task<List<SegmentModel>> GetAllSegments()
+        public async Task<List<SegmentModel>?> GetAllSegments()
         {
             var Segments = await _context.Segments.ToListAsync();
+            if (Segments != null)
+            {
+                return Segments;
 
-            return Segments;
+            }
+            return null;
 
         }
-        public async Task<SegmentModel> GetSegmentById(int id)
+        public async Task<SegmentModel?> GetSegmentById(int id)
         {
             var singleSegment = await _context.Segments.FirstOrDefaultAsync(c => c.Id == id);
+            if (singleSegment != null)
+            {
+                return singleSegment;
 
-
-            return singleSegment;
-
-        }
-        public async Task<SegmentModel> AddSegment(SegmentModel newSegment)
-        {
-
-            _context.Add(newSegment);
-            await _context.SaveChangesAsync();
-
-            return newSegment;
+            }
+            return null;
 
         }
-
-        public async Task<SegmentModel> DeleteSegment(int id)
+        public async Task<SegmentModel?> AddSegment(SegmentModel newSegment)
         {
-            var SegmentToDelete = await _context.Segments.FirstOrDefaultAsync(c => c.Id == id);
+            if (newSegment != null)
+            {
+                _context.Add(newSegment);
+                await _context.SaveChangesAsync();
 
+                return newSegment;
 
-            _context.Segments.Remove(SegmentToDelete);
-
-            await _context.SaveChangesAsync();
-            return SegmentToDelete;
-            ;
-        }
-        public async Task<SegmentModel> UpdateSegment(SegmentModel updatedSegment)
-        {
-            var SegmentToUpdate = await _context.Segments.FirstOrDefaultAsync(c => c.Id == updatedSegment.Id);
-
-
-            SegmentToUpdate.SegmentName = updatedSegment.SegmentName;
-
-            await _context.SaveChangesAsync();
-            return updatedSegment;
-
+            }
+            return null;
         }
 
-        public async Task<List<SegmentModel>> GetSegmentByCategory(int categoryId)
+        public async Task<SegmentModel?> DeleteSegment(int id)
         {
-            return await _context.Segments
-               .Where(s => s.CategoryId == categoryId)
+            var segmentToDelete = await _context.Segments.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (segmentToDelete != null)
+            {
+                _context.Segments.Remove(segmentToDelete);
+
+                await _context.SaveChangesAsync();
+                return segmentToDelete;
+
+            }
+            return null;
+        }
+        public async Task<SegmentModel?> UpdateSegment(SegmentModel updatedSegment)
+        {
+            var segmentToUpdate = await _context.Segments.FirstOrDefaultAsync(c => c.Id == updatedSegment.Id);
+
+            if (segmentToUpdate != null)
+            {
+                segmentToUpdate.SegmentName = updatedSegment.SegmentName;
+
+                await _context.SaveChangesAsync();
+                return updatedSegment;
+
+            }
+            return null;
+
+        }
+        //Get all segments By category
+        public async Task<List<SegmentModel>?> GetSegmentByCategory(int categoryId)
+        {
+            var categorySegment = await _context.Segments
+               .Where(sc => sc.CategoryId == categoryId)
                .ToListAsync();
+            if (categorySegment != null)
+            {
+                return categorySegment;
 
+            }
+            return null;
         }
-
-
     }
 }

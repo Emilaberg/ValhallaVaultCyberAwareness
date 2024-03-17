@@ -1,4 +1,6 @@
-﻿namespace ValhallaVaultCyberAwareness.Repositories
+﻿using valhaValhallaVaultCyberAwarenessllaTest.Repositories;
+
+namespace ValhallaVaultCyberAwareness.Repositories
 {
     public interface IValhallaUow
     {
@@ -7,6 +9,8 @@
         SubCategoryRepository SubCategoryRepo { get; }
         QuestionRepository QuestionRepo { get; }
         PromptRepository PromptRepo { get; }
+
+        UserRepository UserRepo { get; }
 
         Task CompleteAsync();
     }
