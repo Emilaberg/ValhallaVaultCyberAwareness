@@ -20,5 +20,11 @@ namespace ValhallaVaultCyberAwareness.Repositories
              .Where(q => q.UsersAnsweredQuestions.Any(uq => uq.ApplicationUserId == userId)).ToListAsync();
 
         }
+
+        public async Task SaveUserAnswer(ApplicationUserQuestionModel userAnswer)
+        {
+            _context.ApplicationUserQuestions.Add(userAnswer);
+            await _context.SaveChangesAsync();
+        }
     }
 }
