@@ -79,6 +79,7 @@ namespace ValhallaVaultCyberAwareness.Repositories
         {
             var subcategoryQuestion = await _context.Questions
                .Where(sc => sc.SubCategoryId == subCategoryId)
+               .Include(q => q.Prompts)
                .ToListAsync();
             if (subcategoryQuestion != null)
             {

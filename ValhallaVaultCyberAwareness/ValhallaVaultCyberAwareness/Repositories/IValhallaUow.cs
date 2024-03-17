@@ -7,6 +7,7 @@
         SubCategoryRepository SubCategoryRepo { get; }
         QuestionRepository QuestionRepo { get; }
         PromptRepository PromptRepo { get; }
+        UserRepository UserRepo { get; }
 
         UserRepository UserRepo { get; }
 

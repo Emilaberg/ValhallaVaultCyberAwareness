@@ -16,6 +16,8 @@ namespace ValhallaVaultCyberAwareness.Repositories
         public UserRepository UserRepo { get; }
 
 
+        public UserRepository UserRepo { get; }
+
         private readonly ApplicationDbContext _context;
 
         public ValhallaUow(ApplicationDbContext context)
@@ -28,8 +30,6 @@ namespace ValhallaVaultCyberAwareness.Repositories
             QuestionRepo = new(context);
             PromptRepo = new(context);
             UserRepo = new(context);
-
-
         }
 
         public async Task CompleteAsync()

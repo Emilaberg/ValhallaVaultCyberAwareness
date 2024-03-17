@@ -235,7 +235,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
 
                     b.HasIndex("QuestionModelId");
 
-                    b.ToTable("ApplicationUserQuestionModel");
+                    b.ToTable("ApplicationUserQuestions");
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.CategoryModel", b =>
