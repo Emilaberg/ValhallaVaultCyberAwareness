@@ -89,5 +89,28 @@ namespace ValhallaVaultCyberAwareness.Repositories
             return (double)completedCount / subCategories.Count * 100;
         }
 
+        public async Task<bool> CanAccessNextSubCategory(string userId, int currentSubCategoryId)
+        {
+            var questions = await _context.Questions
+                .Where(q => q.SubCategoryId == currentSubCategoryId)
+                .ToListAsync();
+
+            if (!questions.Any())
+            {
+                // If there are no questions in the current subcategory, allow access to the next one
+                return true;
+            }
+
+            var correctAnswersCount = await _context.ApplicationUserQuestions
+                .Where(uq => uq.ApplicationUserId == userId && uq.IsCorrectlyAnswered)
+                .CountAsync();
+
+            var totalQuestionsCount = questions.Count;
+
+            return ((double)correctAnswersCount / totalQuestionsCount) >= 0.8;
+        }
+
+
+
     }
 }

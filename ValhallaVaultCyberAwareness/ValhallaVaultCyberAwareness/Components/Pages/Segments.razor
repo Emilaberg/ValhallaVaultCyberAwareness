@@ -25,7 +25,7 @@ else
                 @* <div class="progress">
                     <div class="progress-bar" role="progressbar" style="width: @GetCategoryProgress(category)%;" aria-valuenow="@GetCategoryProgress(category)" aria-valuemin="0" aria-valuemax="100">@GetCategoryProgress(category)%</div>
                 </div> *@
-                <button class="btn btn-primary" @onclick="() => GoToSubCategoryPage(segment.Id)" disabled="@(!isButtonEnabled)">Go to Subcategory</button>
+             
                 <button class="btn btn-primary" @onclick="() => GoToSubCategoryPage(segment.Id)">Go to Subcategory</button>
             </div>
         </div>

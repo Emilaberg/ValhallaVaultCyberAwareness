@@ -1,4 +1,5 @@
 @page "/home"
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @rendermode InteractiveServer
 @attribute [StreamRendering]
@@ -8,6 +9,9 @@
 @using ValhallaVaultCyberAwareness.Data
 @using ValhallaVaultCyberAwareness.Data.Models
 @using ValhallaVaultCyberAwareness.Repositories
+@inject UserManager<ApplicationUser> UserManager
+@inject IHttpContextAccessor HttpContextAccessor
+
 
 <div>
     <h1>Hello!</h1>
@@ -64,9 +68,8 @@
     @if (selectedSubcategory != null)
     {
         <div>
-            <button type=submit @onclick="NavigateToFrageSida" disabled="@(!CanNavigateToQuiz)">Go to the quizz!</button>
+            <button type="submit" @onclick="NavigateToFrageSida" disabled="@(!canAccessNextSubCategory)">Go to the quizz!</button>
         </div>
-
     }
 }
 
@@ -78,15 +81,18 @@
     private SubCategoryModel selectedSubcategory;
     private string errorMessage;
     private double completionPercentage;
-
-
   
-        // ...
-        private bool CanNavigateToQuiz => selectedSubcategory != null && (IsFirstSubcategory || completionPercentage >= 80);
 
-        private bool IsFirstSubcategory => selectedSegment?.SubCategory.OrderBy(s => s.Id).First().Id == selectedSubcategory.Id;
+
+    private bool canAccessNextSubCategory;
+
+    
+
+    // ...
+       
         // ...
     
+
 
 
     
@@ -95,48 +101,75 @@
     {
         categories = await Uow.CategoryRepo.GetAllCategoriesWithSegmentsAndSubCategories();
         prompts = await Uow.PromptRepo.GetAllPrompts();
+
+        // Fetch the first category, segment, and subcategory
+        selectedCategory = categories.FirstOrDefault();
+        selectedSegment = selectedCategory?.Segments.FirstOrDefault();
+        selectedSubcategory = selectedSegment?.SubCategory.FirstOrDefault();
+
+        // Check if the user can access the next subcategory
+        canAccessNextSubCategory = await CanAccessNextSubCategory();
     }
 
 
-    private void OnCategoryChange(ChangeEventArgs e)
+    private async void OnCategoryChange(ChangeEventArgs e)
     {
         var categoryId = int.Parse(e.Value.ToString());
         selectedCategory = categories.FirstOrDefault(c => c.Id == categoryId);
-        // selectedSegment = null;
-        // selectedSubcategory = null;
+        canAccessNextSubCategory = await CanAccessNextSubCategory();
     }
 
-    private void OnSegmentChange(ChangeEventArgs e)
+    private async void OnSegmentChange(ChangeEventArgs e)
     {
         var segmentId = int.Parse(e.Value.ToString());
         selectedSegment = selectedCategory?.Segments.FirstOrDefault(s => s.Id == segmentId);
-        // selectedSubcategory = null;
+        canAccessNextSubCategory = await CanAccessNextSubCategory();
+    }
+
+    private async Task<bool> CanAccessNextSubCategory()
+    {
+        var user = HttpContextAccessor.HttpContext.User != null ? await UserManager.GetUserAsync(HttpContextAccessor.HttpContext.User) : null;
+        bool isFirstCategory = selectedCategory == categories.FirstOrDefault();
+        bool isFirstSegment = selectedSegment == selectedCategory?.Segments.FirstOrDefault();
+        bool isFirstSubcategory = selectedSubcategory == selectedSegment?.SubCategory.FirstOrDefault();
+
+        // If the selected category, segment, and subcategory are the first ones, return true
+        if (isFirstCategory && isFirstSegment && isFirstSubcategory)
+        {
+            return true;
+        }
+
+        // Otherwise, check if the user has more than 80% progress in the current category
+        int categoryProgress = await GetCategoryProgress(selectedCategory);
+        bool hasEnoughProgress = categoryProgress >= 80;
+
+        return hasEnoughProgress && user != null && selectedSubcategory != null &&
+               await Uow.SubCategoryRepo.CanAccessNextSubCategory(user.Id, selectedSubcategory.Id);
     }
 
     private async void OnSubcategoryChange(ChangeEventArgs e)
     {
         var subcategoryId = int.Parse(e.Value.ToString());
-        var selectedSubcategory = selectedSegment?.SubCategory.FirstOrDefault(s => s.Id == subcategoryId);
-
-        if (selectedSubcategory != null)
-        {
-            // Check if the selected subcategory is the first one
-            bool isFirstSubcategory = selectedSegment?.SubCategory.OrderBy(s => s.Id).First().Id == selectedSubcategory.Id;
-
-            // Update completionPercentage
-            completionPercentage = await Uow.SubCategoryRepo.GetCompletionPercentage(selectedSubcategory.Id);
-
-            if (isFirstSubcategory || completionPercentage >= 80)
-            {
-                this.selectedSubcategory = selectedSubcategory;
-                errorMessage = null; // clear the error message
-            }
-            else
-            {
-                errorMessage = "You must complete at least 80% of the current subcategory before proceeding to the next one.";
-            }
-        }
+        selectedSubcategory = selectedSegment?.SubCategory.FirstOrDefault(sc => sc.Id == subcategoryId);
+        canAccessNextSubCategory = await CanAccessNextSubCategory();
     }
+
+    private async Task<int> GetCategoryProgress(CategoryModel category)
+    {
+        var segments = await Uow.SegmentRepo.GetSegmentByCategory(category.Id);
+        var totalSubCategories = 0;
+        var completedSubCategories = 0;
+
+        foreach (var segment in segments)
+        {
+            var subCategories = await Uow.SubCategoryRepo.GetSubcategoriesBySegment(segment.Id);
+            totalSubCategories += subCategories.Count;
+            completedSubCategories += subCategories.Count(sc => sc.IsCompleted);
+        }
+
+        return totalSubCategories == 0 ? 0 : (completedSubCategories * 100) / totalSubCategories;
+    }
+    
 
     private void NavigateToFrageSida()
     {
@@ -146,40 +179,12 @@
         }
     }
 
-
+    }
     }
 
 
-}
-
-
-
-
-@* seasrch och  %!!! <input id="searchBox" name="searchBox" type="text" @oninput="@(e => { searchTerm = e.Value.ToString(); SearchCategories(); })" placeholder="Search for a category..." /> *@
 
 
 
 
 
-
-
-    @* // private int GetCompletedPercentage(CategoryModel category)
-    // {
-    //     var totalSubCategories = category.Segments.SelectMany(s => s.SubCategory).Count();
-    //     var completedSubCategories = category.Segments.SelectMany(s => s.SubCategory).Count(sc => sc.IsCompleted);
-
-    //     return totalSubCategories > 0 ? (completedSubCategories * 100) / totalSubCategories : 0;
-    // }
-
-    // private void SearchCategories()
-    // {
-    //     if (string.IsNullOrWhiteSpace(searchTerm))
-    //     {
-    //         filteredCategories = categories;
-    //     }
-    //     else
-    //     {
-    //         filteredCategories = categories.Where(c => !string.IsNullOrEmpty(c.CategoryName) && c.CategoryName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
-    //     }
-    // } *@
-}
