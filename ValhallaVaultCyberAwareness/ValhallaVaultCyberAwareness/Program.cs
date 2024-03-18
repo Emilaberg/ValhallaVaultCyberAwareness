@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
 using ValhallaVaultCyberAwareness.Data;
+
+using ValhallaVaultCyberAwareness.Data.Managers;
+
 using ValhallaVaultCyberAwareness.Repositories;
-//using static ValhallaVaultCyberAwareness.Components.Pages.Home;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,7 +25,9 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddScoped<IValhallaUow, ValhallaUow>();
-//builder.Services.AddScoped<MyProgressService>();
+
+//Dessa bör inte användas utan det är vårt uow som sköter det. uow innehåller alla repos.
+//vi låter det ligga kvar för att inte förstöra kod som bygger på att dessa finns med.
 builder.Services.AddScoped<SegmentRepository>();
 builder.Services.AddScoped<SubCategoryRepository>();
 builder.Services.AddScoped<QuestionRepository>();
@@ -77,13 +81,17 @@ builder.Services.AddCors(options =>
 
 //Den här måste vara utkommenterad när man skapar database för första gången.
 
-//using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
-//{
-//    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
-//    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
+{
+    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-//    new RoleManager(signInManager, roleManager).InitialAdminAccount();
-//}
+    RoleManager createRoleManager = new RoleManager(signInManager, roleManager);
+    createRoleManager.InitialAdminAccount();
+
+    //lade till så att det skapas en member också när man startar appen, samma logik som för admin account. kolla Rolemanager för credentials albin //Emil
+    createRoleManager.InitialMemberAccount();
+}
 
 var app = builder.Build();
 
@@ -102,9 +110,13 @@ else
 
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
+
 app.UseRouting();
+
 app.UseAuthorization();
+
 app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
@@ -113,6 +125,8 @@ app.MapRazorComponents<App>()
 app.MapAdditionalIdentityEndpoints();
 
 app.MapControllers();
+
+app.UseMiddleware<TimeMiddleware>();
 
 app.UseCors("AllowAll");
 
