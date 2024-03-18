@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
-using ValhallaVaultCyberAwareness.Components.Middleware;
 using ValhallaVaultCyberAwareness.Data;
 using ValhallaVaultCyberAwareness.Repositories;
 //using static ValhallaVaultCyberAwareness.Components.Pages.Home;
@@ -101,28 +100,15 @@ else
     app.UseHsts();
 }
 
-app.UseMiddleware<CustomMiddleware>(); // Custom middleware
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-
-
-
-app.UseHttpsRedirection();
-
-app.UseStaticFiles();
 app.UseAntiforgery();
-
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode();
-
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
