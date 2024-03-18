@@ -44,7 +44,11 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+//används ej längre då denna hämtade key från lokala datorn för att koppla till azure databasen, nu kör vi lokala databasen istället
+//var connectionString = new KeyManager().GetKey() ?? throw new ArgumentNullException("The specified path is not valid");
+
+var connectionString = builder.Configuration.GetConnectionString("DbConnection") ?? throw new ArgumentNullException("The specified path is not valid");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -71,6 +75,8 @@ builder.Services.AddCors(options =>
    });
 });
 //Adding admin role and admin user
+
+//Den här måste vara utkommenterad när man skapar database för första gången.
 
 //using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
 //{
