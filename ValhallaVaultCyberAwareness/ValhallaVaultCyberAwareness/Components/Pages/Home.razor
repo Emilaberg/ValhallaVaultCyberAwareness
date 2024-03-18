@@ -64,8 +64,9 @@
     @if (selectedSubcategory != null)
     {
         <div>
-            <button type=submit @onclick="NavigateToFrageSida">Go to the quizz!</button>
+            <button type=submit @onclick="NavigateToFrageSida" disabled="@(!CanNavigateToQuiz)">Go to the quizz!</button>
         </div>
+
     }
 }
 
@@ -75,6 +76,20 @@
     private CategoryModel selectedCategory;
     private SegmentModel selectedSegment;
     private SubCategoryModel selectedSubcategory;
+    private string errorMessage;
+    private double completionPercentage;
+
+
+  
+        // ...
+        private bool CanNavigateToQuiz => selectedSubcategory != null && (IsFirstSubcategory || completionPercentage >= 80);
+
+        private bool IsFirstSubcategory => selectedSegment?.SubCategory.OrderBy(s => s.Id).First().Id == selectedSubcategory.Id;
+        // ...
+    
+
+
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,10 +113,29 @@
         // selectedSubcategory = null;
     }
 
-    private void OnSubcategoryChange(ChangeEventArgs e)
+    private async void OnSubcategoryChange(ChangeEventArgs e)
     {
         var subcategoryId = int.Parse(e.Value.ToString());
-        selectedSubcategory = selectedSegment?.SubCategory.FirstOrDefault(s => s.Id == subcategoryId);
+        var selectedSubcategory = selectedSegment?.SubCategory.FirstOrDefault(s => s.Id == subcategoryId);
+
+        if (selectedSubcategory != null)
+        {
+            // Check if the selected subcategory is the first one
+            bool isFirstSubcategory = selectedSegment?.SubCategory.OrderBy(s => s.Id).First().Id == selectedSubcategory.Id;
+
+            // Update completionPercentage
+            completionPercentage = await Uow.SubCategoryRepo.GetCompletionPercentage(selectedSubcategory.Id);
+
+            if (isFirstSubcategory || completionPercentage >= 80)
+            {
+                this.selectedSubcategory = selectedSubcategory;
+                errorMessage = null; // clear the error message
+            }
+            else
+            {
+                errorMessage = "You must complete at least 80% of the current subcategory before proceeding to the next one.";
+            }
+        }
     }
 
     private void NavigateToFrageSida()
@@ -111,6 +145,11 @@
             NavigationManager.NavigateTo($"/questions/{selectedSubcategory.Id}");
         }
     }
+
+
+    }
+
+
 }
 
 

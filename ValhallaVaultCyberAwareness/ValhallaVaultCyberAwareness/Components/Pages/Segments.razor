@@ -25,6 +25,7 @@ else
                 @* <div class="progress">
                     <div class="progress-bar" role="progressbar" style="width: @GetCategoryProgress(category)%;" aria-valuenow="@GetCategoryProgress(category)" aria-valuemin="0" aria-valuemax="100">@GetCategoryProgress(category)%</div>
                 </div> *@
+                <button class="btn btn-primary" @onclick="() => GoToSubCategoryPage(segment.Id)" disabled="@(!isButtonEnabled)">Go to Subcategory</button>
                 <button class="btn btn-primary" @onclick="() => GoToSubCategoryPage(segment.Id)">Go to Subcategory</button>
             </div>
         </div>
@@ -36,18 +37,28 @@ else
     public int segmentId { get; set; }
 
     private List<SegmentModel> segments;
+    private List<CategoryModel> categories;
+
+    private PromptModel userprompt;
+
+
+    private double completionPercentage;
+    private bool isButtonEnabled;
+   
+    
 
     protected override async Task OnInitializedAsync()
     {
         segments = await Uow.SegmentRepo.GetAllSegments();
+        if (segments != null && segments.Any())
+        {
+            var segment = segments.First(); // or get the segment you're interested in
+            completionPercentage = await Uow.SubCategoryRepo.GetCompletionPercentage(segment.Id);
+            isButtonEnabled = completionPercentage >= 80;
+        }
     }
 
-    private int GetCategoryProgress(SegmentModel segment)
-    {
-        // Calculate the progress for the category
-        // This is a placeholder implementation, replace it with your actual logic
-        return 50;
-    }
+   
 
     private void GoToSubCategoryPage(int subcategoryId)
     {

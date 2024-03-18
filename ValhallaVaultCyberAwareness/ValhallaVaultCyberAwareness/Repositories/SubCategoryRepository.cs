@@ -65,6 +65,29 @@ namespace ValhallaVaultCyberAwareness.Repositories
                 .ToListAsync();
         }
 
+        // update IsCompleted
+
+        public async Task UpdateSubCategoryCompletion(int subCategoryId, bool isCompleted)
+        {
+            var subCategory = await _context.SubCategories.FindAsync(subCategoryId);
+            if (subCategory != null)
+            {
+                subCategory.IsCompleted = isCompleted;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<double> GetCompletionPercentage(int segmentId)
+        {
+            var subCategories = await GetSubcategoriesBySegment(segmentId);
+            if (subCategories == null || subCategories.Count == 0)
+            {
+                return 0;
+            }
+
+            int completedCount = subCategories.Count(sc => sc.IsCompleted);
+            return (double)completedCount / subCategories.Count * 100;
+        }
 
     }
 }

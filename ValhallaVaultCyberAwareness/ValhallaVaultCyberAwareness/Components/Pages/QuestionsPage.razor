@@ -46,6 +46,8 @@ else
     private SubCategoryModel currentSubCategory;
     private SegmentModel currentSegment;
 
+
+
     protected override async Task OnInitializedAsync()
     {
         currentSubCategory = await SubCategoryRepo.GetSubCategoryById(subCategoryId);
@@ -65,7 +67,7 @@ else
         if (currentQuestion != null)
         {
             // Remove the current question from the list so it won't be loaded again
-            questions.Remove(currentQuestion);
+            // questions.Remove(currentQuestion);
         }
         else
         {
@@ -89,6 +91,9 @@ else
     {
         isAnswered = true;
         isCorrect = prompt.IsCorrect;
+
+
+
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var claim = authState.User.FindFirst(ClaimTypes.NameIdentifier);
@@ -132,11 +137,24 @@ else
             StateHasChanged();
         }
 
+        var userQuestions = await UserRepo.GetUserQuestions(userId);
+        var subCategoryQuestions = await QuestionRepo.GetQuestionBySubCategory(subCategoryId);
+        if (subCategoryQuestions.All(q => userQuestions.Any(uq => uq.Id == q.Id)))
+        {
+            // If all questions have been answered, mark the subcategory as completed
+            await SubCategoryRepo.UpdateSubCategoryCompletion(subCategoryId, true);
+        }
+
         // Move to the next question
         currentQuestionIndex++;
         if (currentQuestionIndex < questions.Count)
         {
             currentQuestion = questions[currentQuestionIndex];
+        }
+        else if (currentQuestionIndex == questions.Count)
+        {
+            // Load the last question
+            currentQuestion = questions[currentQuestionIndex - 1];
         }
         else
         {
@@ -166,11 +184,14 @@ else
                 }
                 else
                 {
-                    
                     // No more segments in this category, navigate to a completion page or show a completion message
                     NavigationManager.NavigateTo("/completion");
                 }
+
+
             }
+
+
         }
     }
 }
