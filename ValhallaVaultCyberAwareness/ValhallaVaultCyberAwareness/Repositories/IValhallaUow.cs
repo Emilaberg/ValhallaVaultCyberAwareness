@@ -9,8 +9,6 @@
         PromptRepository PromptRepo { get; }
         UserRepository UserRepo { get; }
 
-        UserRepository UserRepo { get; }
-
         Task CompleteAsync();
     }
 }

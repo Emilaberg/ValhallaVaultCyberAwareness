@@ -15,9 +15,6 @@ namespace ValhallaVaultCyberAwareness.Repositories
         public PromptRepository PromptRepo { get; }
         public UserRepository UserRepo { get; }
 
-
-        public UserRepository UserRepo { get; }
-
         private readonly ApplicationDbContext _context;
 
         public ValhallaUow(ApplicationDbContext context)
