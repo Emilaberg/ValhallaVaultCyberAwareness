@@ -3,12 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
-using ValhallaVaultCyberAwareness.Components.Middleware;
 using ValhallaVaultCyberAwareness.Data;
-
-using ValhallaVaultCyberAwareness.Data.Managers;
-
-
+using ValhallaVaultCyberAwareness.Midleware;
 using ValhallaVaultCyberAwareness.Repositories;
 
 
@@ -36,10 +32,6 @@ builder.Services.AddScoped<QuestionRepository>();
 builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<PromptRepository>();
 builder.Services.AddScoped<UserRepository>();
-
-
-
-
 
 
 builder.Services.AddAuthentication(options =>
@@ -114,20 +106,23 @@ else
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-app.UseAntiforgery();
 
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode();
-
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
 app.MapControllers();
 
+app.UseMiddleware<TimeMiddleware>();
+
 app.UseCors("AllowAll");
 
-//samis middleware
-//app.UseMiddleware<CustomMiddleware>(); // Custom middleware
 app.Run();
 

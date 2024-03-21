@@ -1,0 +1,68 @@
+﻿@using ValhallaVaultCyberAwareness.Repositories
+@using ValhallaVaultCyberAwareness.Data.Models
+@using ValhallaVaultCyberAwareness.Data
+@using ValhallaVaultCyberAwareness.Components.Pages
+@inject IValhallaUow Uow
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+@page "/segment/{segmentId:int}"
+
+<h3>Segments</h3>
+
+@if (segments == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @foreach (var segment in segments)
+    {
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">@segment.SegmentName</h5>
+                <p class="card-text">Some information about this category...</p>
+                @* <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: @GetCategoryProgress(category)%;" aria-valuenow="@GetCategoryProgress(category)" aria-valuemin="0" aria-valuemax="100">@GetCategoryProgress(category)%</div>
+                </div> *@
+             
+                <button class="btn btn-primary" @onclick="() => GoToSubCategoryPage(segment.Id)">Go to Subcategory</button>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public int segmentId { get; set; }
+
+    private List<SegmentModel> segments;
+    private List<CategoryModel> categories;
+
+    private PromptModel userprompt;
+
+
+    private double completionPercentage;
+    private bool isButtonEnabled;
+   
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        segments = await Uow.SegmentRepo.GetAllSegments();
+        if (segments != null && segments.Any())
+        {
+            var segment = segments.First(); // or get the segment you're interested in
+            completionPercentage = await Uow.SubCategoryRepo.GetCompletionPercentage(segment.Id);
+            isButtonEnabled = completionPercentage >= 80;
+        }
+    }
+
+   
+
+    private void GoToSubCategoryPage(int subcategoryId)
+    {
+        NavigationManager.NavigateTo($"subcategory/{subcategoryId}");
+    }
+
+}

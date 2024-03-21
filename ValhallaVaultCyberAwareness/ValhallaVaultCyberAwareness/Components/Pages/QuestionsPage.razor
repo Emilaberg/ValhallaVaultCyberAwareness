@@ -1,19 +1,20 @@
 ﻿@page "/questions/{subCategoryId:int}"
 @using System.Security.Claims
 @using Microsoft.EntityFrameworkCore
-@* @using System.Text.Json *@
 @using ValhallaVaultCyberAwareness.Data.Models
 @using ValhallaVaultCyberAwareness.Repositories
+@using ValhallaVaultCyberAwareness.Components.Pages
 @inject QuestionRepository QuestionRepo
 @inject PromptRepository PromptRepo
 @inject SubCategoryRepository SubCategoryRepo
+@inject SegmentRepository SegmentRepo
 @inject IValhallaUow Uow
 @inject UserRepository UserRepo
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@* @inject ILogger<FrågeSida> Logger *@
 @inject NavigationManager NavigationManager
+@rendermode InteractiveAuto
 
-@* <h3>FrågeSida</h3>
+<h3>FrågeSida</h3>
 
 @if (currentQuestion == null)
 {
@@ -32,9 +33,7 @@ else
         <p>The answer is @((isCorrect) ? "correct" : "incorrect")</p>
     }
     <h1> bös </h1>
-} *@
-
-
+}
 
 @code {
     [Parameter]
@@ -43,9 +42,17 @@ else
     private List<QuestionModel> questions;
     private bool isAnswered = false;
     private bool isCorrect = false;
+    private int currentQuestionIndex = 0;
+    private SubCategoryModel currentSubCategory;
+    private SegmentModel currentSegment;
+
+
 
     protected override async Task OnInitializedAsync()
     {
+        currentSubCategory = await SubCategoryRepo.GetSubCategoryById(subCategoryId);
+        currentSegment = await SegmentRepo.GetSegmentById(currentSubCategory.SegmentId);
+        questions = await QuestionRepo.GetQuestionBySubCategory(subCategoryId);
         await LoadQuestion();
     }
 
@@ -60,7 +67,7 @@ else
         if (currentQuestion != null)
         {
             // Remove the current question from the list so it won't be loaded again
-            questions.Remove(currentQuestion);
+            // questions.Remove(currentQuestion);
         }
         else
         {
@@ -69,7 +76,7 @@ else
             if (nextSubCategory != null)
             {
                 // If it exists, navigate to the next subcategory
-                NavigationManager.NavigateTo($"/questionss/{subCategoryId + 1}");
+                NavigationManager.NavigateTo($"/questions/{subCategoryId + 1}");
             }
             else
             {
@@ -85,18 +92,106 @@ else
         isAnswered = true;
         isCorrect = prompt.IsCorrect;
 
+
+
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var userId = authState.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        var claim = authState.User.FindFirst(ClaimTypes.NameIdentifier);
+        if (claim == null)
+        {
+            Console.WriteLine("The claim is null");
+            return;
+        }
 
-        var userAnswer = new ApplicationUserQuestionModel
+        var userId = claim.Value;
+
+        var existingUserAnswer = await UserRepo.GetUserAnswers(userId, currentQuestion.Id);
+        if (existingUserAnswer != null)
+        {
+            // Update the existing user answer
+            existingUserAnswer.IsCorrectlyAnswered = isCorrect;
+            await UserRepo.SaveUserAnswer(existingUserAnswer);
+            Console.WriteLine("The user has already answered the question");
+        }
+        else
+        {
+            var userAnswer = new ApplicationUserQuestionModel
+                {
+                    ApplicationUserId = userId,
+                    QuestionModelId = currentQuestion.Id,
+                    IsCorrectlyAnswered = isCorrect
+                };
+
+            await UserRepo.SaveUserAnswer(userAnswer);
+
+            var savedAnswer = await UserRepo.GetUserAnswers(userId, currentQuestion.Id);
+
+            if (savedAnswer != null && savedAnswer.IsCorrectlyAnswered == isCorrect)
             {
-                ApplicationUserId = userId,
-                QuestionModelId = currentQuestion.Id,
-                IsCorrectlyAnswered = isCorrect
-            };
+                Console.WriteLine("The user has answered the question correctly");
+            }
+            else
+            {
+                Console.WriteLine("The user has answered the question incorrectly");
+            }
+            StateHasChanged();
+        }
 
-        await UserRepo.SaveUserAnswer(userAnswer);
+        var userQuestions = await UserRepo.GetUserQuestions(userId);
+        var subCategoryQuestions = await QuestionRepo.GetQuestionBySubCategory(subCategoryId);
+        if (subCategoryQuestions.All(q => userQuestions.Any(uq => uq.Id == q.Id)))
+        {
+            // If all questions have been answered, mark the subcategory as completed
+            await SubCategoryRepo.UpdateSubCategoryCompletion(subCategoryId, true);
+        }
 
-        await LoadQuestion();
+        // Move to the next question
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.Count)
+        {
+            currentQuestion = questions[currentQuestionIndex];
+        }
+        else if (currentQuestionIndex == questions.Count)
+        {
+            // Load the last question
+            currentQuestion = questions[currentQuestionIndex - 1];
+        }
+        else
+        {
+            // No more questions in this subcategory, move to the next subcategory
+            var subCategories = await SubCategoryRepo.GetSubcategoriesBySegment(currentSubCategory.SegmentId);
+            var currentSubCategoryIndex = subCategories.FindIndex(sc => sc.Id == currentSubCategory.Id);
+            if (currentSubCategoryIndex < subCategories.Count - 1)
+            {
+                currentSubCategory = subCategories[currentSubCategoryIndex + 1];
+                questions = await QuestionRepo.GetQuestionBySubCategory(currentSubCategory.Id);
+                currentQuestionIndex = 0;
+                currentQuestion = questions[currentQuestionIndex];
+            }
+            else
+            {
+                // No more subcategories in this segment, move to the next segment
+                var segments = await SegmentRepo.GetSegmentByCategory(currentSegment.CategoryId);
+                var currentSegmentIndex = segments.FindIndex(s => s.Id == currentSegment.Id);
+                if (currentSegmentIndex < segments.Count - 1)
+                {
+                    currentSegment = segments[currentSegmentIndex + 1];
+                    subCategories = await SubCategoryRepo.GetSubcategoriesBySegment(currentSegment.Id);
+                    currentSubCategory = subCategories[0];
+                    questions = await QuestionRepo.GetQuestionBySubCategory(currentSubCategory.Id);
+                    currentQuestionIndex = 0;
+                    currentQuestion = questions[currentQuestionIndex];
+                }
+                else
+                {
+                    // No more segments in this category, navigate to a completion page or show a completion message
+                    NavigationManager.NavigateTo("/categories");
+                }
+
+
+            }
+
+
+        }
     }
 }

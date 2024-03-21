@@ -235,7 +235,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
 
                     b.HasIndex("QuestionModelId");
 
-                    b.ToTable("ApplicationUserQuestions");
+                    b.ToTable("ApplicationUserQuestions", (string)null);
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.CategoryModel", b =>
@@ -251,7 +251,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.PromptModel", b =>
@@ -276,7 +276,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Prompts");
+                    b.ToTable("Prompts", (string)null);
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.QuestionModel", b =>
@@ -301,7 +301,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
 
                     b.HasIndex("SubCategoryId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.SegmentModel", b =>
@@ -322,7 +322,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Segments");
+                    b.ToTable("Segments", (string)null);
                 });
 
             modelBuilder.Entity("ValhallaVaultCyberAwareness.Data.Models.SubCategoryModel", b =>
@@ -346,7 +346,7 @@ namespace ValhallaVaultCyberAwareness.Migrations
 
                     b.HasIndex("SegmentId");
 
-                    b.ToTable("SubCategories");
+                    b.ToTable("SubCategories", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

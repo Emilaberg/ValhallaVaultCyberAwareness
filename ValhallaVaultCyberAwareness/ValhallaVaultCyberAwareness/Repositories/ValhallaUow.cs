@@ -1,5 +1,6 @@
 ﻿using ValhallaVaultCyberAwareness.Data;
 
+
 namespace ValhallaVaultCyberAwareness.Repositories
 {
     public class ValhallaUow : IValhallaUow
@@ -12,7 +13,6 @@ namespace ValhallaVaultCyberAwareness.Repositories
         public QuestionRepository QuestionRepo { get; }
 
         public PromptRepository PromptRepo { get; }
-
         public UserRepository UserRepo { get; }
 
         private readonly ApplicationDbContext _context;
@@ -27,10 +27,6 @@ namespace ValhallaVaultCyberAwareness.Repositories
             QuestionRepo = new(context);
             PromptRepo = new(context);
             UserRepo = new(context);
-
-
-
-
         }
 
         public async Task CompleteAsync()
