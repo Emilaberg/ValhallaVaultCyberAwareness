@@ -1,0 +1,71 @@
+﻿@page "/categories"
+@using ValhallaVaultCyberAwareness.Repositories
+@using ValhallaVaultCyberAwareness.Data.Models
+@using ValhallaVaultCyberAwareness.Data
+@using ValhallaVaultCyberAwareness.Components.Pages
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IValhallaUow Uow
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+
+<h3>Categories</h3>
+
+@if (categories == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @foreach (var category in categories)
+    {
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">@category.CategoryName</h5>
+                <p class="card-text"></p>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: @categoryProgresses[category.Id]%;" aria-valuenow="@categoryProgresses[category.Id]" aria-valuemax="100">@categoryProgresses[category.Id]%</div>
+
+                </div>
+                <button class="btn btn-primary" @onclick="() => GoToSegmentPage(category.Id)">Go to Segment</button>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private List<CategoryModel> categories;
+    private Dictionary<int, int> categoryProgresses = new Dictionary<int, int>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await Uow.CategoryRepo.GetAllCategories();
+        foreach (var category in categories)
+        {
+            categoryProgresses[category.Id] = await GetCategoryProgress(category);
+        }
+    }
+
+    private async Task<int> GetCategoryProgress(CategoryModel category)
+    {
+        var segments = await Uow.SegmentRepo.GetSegmentByCategory(category.Id);
+        var totalSubCategories = 0;
+        var completedSubCategories = 0;
+
+        foreach (var segment in segments)
+        {
+            var subCategories = await Uow.SubCategoryRepo.GetSubcategoriesBySegment(segment.Id);
+            totalSubCategories += subCategories.Count;
+            completedSubCategories += subCategories.Count(sc => sc.IsCompleted);
+        }
+
+        return totalSubCategories == 0 ? 0 : (completedSubCategories * 100) / totalSubCategories;
+    }
+
+    private void GoToSegmentPage(int segmentId)
+    {
+        NavigationManager.NavigateTo($"/segment/{segmentId}");
+    }
+}

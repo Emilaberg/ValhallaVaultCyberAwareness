@@ -23,8 +23,28 @@ namespace ValhallaVaultCyberAwareness.Repositories
 
         public async Task SaveUserAnswer(ApplicationUserQuestionModel userAnswer)
         {
-            _context.ApplicationUserQuestions.Add(userAnswer);
+            var existingUserAnswer = await _context.ApplicationUserQuestions
+                .Where(uq => uq.ApplicationUserId == userAnswer.ApplicationUserId && uq.QuestionModelId == userAnswer.QuestionModelId)
+                .FirstOrDefaultAsync();
+
+            if (existingUserAnswer != null)
+            {
+                // Update the existing answer
+                existingUserAnswer.IsCorrectlyAnswered = userAnswer.IsCorrectlyAnswered;
+            }
+            else
+            {
+                // Add a new answer
+                _context.ApplicationUserQuestions.Add(userAnswer);
+            }
+
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ApplicationUserQuestionModel?> GetUserAnswers(string userId, int questionId)
+        {
+            return await _context.ApplicationUserQuestions
+             .Where(uq => uq.ApplicationUserId == userId && uq.QuestionModelId == questionId).FirstOrDefaultAsync();
         }
     }
 }

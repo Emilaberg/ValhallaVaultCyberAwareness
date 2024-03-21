@@ -91,6 +91,52 @@ namespace ValhallaVaultCyberAwareness.Repositories
             return null;
         }
 
+        // update IsCompleted
+
+        public async Task UpdateSubCategoryCompletion(int subCategoryId, bool isCompleted)
+        {
+            var subCategory = await _context.SubCategories.FindAsync(subCategoryId);
+            if (subCategory != null)
+            {
+                subCategory.IsCompleted = isCompleted;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<double> GetCompletionPercentage(int segmentId)
+        {
+            var subCategories = await GetSubcategoriesBySegment(segmentId);
+            if (subCategories == null || subCategories.Count == 0)
+            {
+                return 0;
+            }
+
+            int completedCount = subCategories.Count(sc => sc.IsCompleted);
+            return (double)completedCount / subCategories.Count * 100;
+        }
+
+        public async Task<bool> CanAccessNextSubCategory(string userId, int currentSubCategoryId)
+        {
+            var questions = await _context.Questions
+                .Where(q => q.SubCategoryId == currentSubCategoryId)
+                .ToListAsync();
+
+            if (!questions.Any())
+            {
+                // If there are no questions in the current subcategory, allow access to the next one
+                return true;
+            }
+
+            var correctAnswersCount = await _context.ApplicationUserQuestions
+                .Where(uq => uq.ApplicationUserId == userId && uq.IsCorrectlyAnswered)
+                .CountAsync();
+
+            var totalQuestionsCount = questions.Count;
+
+            return ((double)correctAnswersCount / totalQuestionsCount) >= 0.8;
+        }
+
+
 
     }
 }
