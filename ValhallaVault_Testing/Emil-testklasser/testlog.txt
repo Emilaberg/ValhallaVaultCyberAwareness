@@ -1,0 +1,20 @@
+﻿
+#Hittade test - vilka metoder och delar i projektet behövs testas
+
+
+
+
+#Skapade test - vilka tester har jag skapat
+
+
+
+#Provade test - vilka har jag provat
+
+
+
+#modiferad kod
+Ex: CategoryController rad:31 "lagt till HttpGet"
+- 
+
+
+
