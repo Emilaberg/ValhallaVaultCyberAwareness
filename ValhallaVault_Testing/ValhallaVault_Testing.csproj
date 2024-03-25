@@ -22,4 +22,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ValhallaVaultCyberAwareness\ValhallaVaultCyberAwareness.Client\ValhallaVaultCyberAwareness.Client.csproj" />
+    <ProjectReference Include="..\ValhallaVaultCyberAwareness\ValhallaVaultCyberAwareness\ValhallaVaultCyberAwareness.csproj" />
+  </ItemGroup>
+
 </Project>
