@@ -1,4 +1,7 @@
-﻿
+﻿#länk till cypress ui testing för valhalla 
+https://github.com/Emilaberg/valhallatesting-ui
+
+
 #Hittade test - vilka metoder och delar i projektet behövs testas
 
 
