@@ -319,15 +319,15 @@ else
 
 
 @code {
-    private List<CategoryModel>? categories = [];
-    private List<SegmentModel>? segments = [];
+    public List<CategoryModel>? categories = [];
+    public List<SegmentModel>? segments = [];
 
 
 
-    private SubCategoryModel? selectedSubCategory;
-    private CategoryModel? selectedCategory;
-    private QuestionModel? selectedQuestion;
-    private SegmentModel? selectedSegment;
+    public SubCategoryModel? selectedSubCategory;
+    public CategoryModel? selectedCategory;
+    public QuestionModel? selectedQuestion;
+    public SegmentModel? selectedSegment;
 
 
     protected override async Task OnInitializedAsync()
@@ -338,7 +338,7 @@ else
 
     }
     //open modal for edits based on the Object passed to the method
-    private void OpenEditModal(object item)
+    public void OpenEditModal(object item)
     {
         //switch case for opening modal based on item
         switch (item)
@@ -372,7 +372,8 @@ else
             case CategoryModel category when category != null:
                 selectedCategory = category;
                 await _uow.CategoryRepo.DeleteCategory(selectedCategory.Id);
-                NavigationManager.NavigateTo(NavigationManager.ToBaseRelativePath(NavigationManager.Uri), true);
+                // NavigationManager.NavigateTo(NavigationManager.ToBaseRelativePath(NavigationManager.Uri), true);
+                await _uow.CategoryRepo.GetAllCategoriesWithSegmentsAndSubCategories();
                 break;
 
             case SubCategoryModel subCategory when subCategory != null:
@@ -402,13 +403,12 @@ else
     }
 
     //logic for closing Edit Modal
-    private void ClearSelected()
+    public void ClearSelected()
     {
         selectedSubCategory = null;
         selectedCategory = null;
         selectedSegment = null;
         selectedQuestion = null;
-        StateHasChanged();
     }
 
     // Method to handle form submission
@@ -436,7 +436,8 @@ else
             await _uow.QuestionRepo.UpdateQuestion(selectedQuestion);
         }
         ClearSelected();
-        NavigationManager.NavigateTo(NavigationManager.ToBaseRelativePath(NavigationManager.Uri), true);
+        await _uow.CategoryRepo.GetAllCategoriesWithSegmentsAndSubCategories();
+        // NavigationManager.NavigateTo(NavigationManager.ToBaseRelativePath(NavigationManager.Uri), true);
     }
     private void NavigateToAdd()
     {
