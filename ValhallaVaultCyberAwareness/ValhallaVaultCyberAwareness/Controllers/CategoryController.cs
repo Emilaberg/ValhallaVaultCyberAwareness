@@ -68,7 +68,7 @@ namespace ValhallaVaultCyberAwareness.Controllers
 
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult<CategoryModel>> UpdateCategory(CategoryModel category)
         {
             var updatedCategory = await _uow.CategoryRepo.UpdateCategory(category);
