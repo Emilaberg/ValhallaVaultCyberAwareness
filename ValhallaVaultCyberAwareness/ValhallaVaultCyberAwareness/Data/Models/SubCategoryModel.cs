@@ -7,7 +7,7 @@ namespace ValhallaVaultCyberAwareness.Data.Models
         [Key]
         public int Id { get; set; }
         //Exempelvis: Kreditkortsbedrägeri
-        [Required(ErrorMessage = "Subcategory name is required")]
+        //[Required(ErrorMessage = "Subcategory name is required")]
         public string? SubCategoryName { get; set; }
 
         public bool IsCompleted { get; set; }

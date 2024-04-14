@@ -1,0 +1,388 @@
+{
+	"info": {
+		"_postman_id": "e4f3ee57-371f-4991-a5d1-9e8a7dba4858",
+		"name": "ValhallaVault API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32627839"
+	},
+	"item": [
+		{
+			"name": "https://localhost:7257/api/category GET CATEGORY",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"request successfull\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"all categories have all properties\", function () {\r",
+							"    var categories = pm.response.json();\r",
+							"    for(let category of categories){\r",
+							"    pm.expect(category).to.have.all.keys([\"id\",\"subCategoryName\", \"isCompleted\", \"segmentId\",\"questions\"]);\r",
+							"    }\r",
+							"});\r",
+							"pm.test(\"Response is an array\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(jsonData).to.be.an('array')\r",
+							"\r",
+							"});\r",
+							"pm.test(\"Categories array is not empty\", function () {\r",
+							"    var categories = pm.response.json();\r",
+							"    pm.expect(categories.length).to.be.above(0);\r",
+							"});\r",
+							"pm.test(\"IDs are unique\", function () {\r",
+							"    var categories = pm.response.json();\r",
+							"    var ids = new Set(categories.map(category => category.id));\r",
+							"    pm.expect(ids.size).to.equal(categories.length);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7257/api/subcategory",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7257",
+					"path": [
+						"api",
+						"subcategory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:7257/api/category Post Category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Required fields are present and not empty\", function () {\r",
+							"    var requestBody = pm.request.body;\r",
+							"    var jsonData = JSON.parse(requestBody);\r",
+							"\r",
+							"    pm.expect(jsonData).to.have.property(\"subCategoryName\").and.to.not.be.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body contains expected data\", function () {\r",
+							"    var responseBody = pm.response.json();\r",
+							"    pm.expect(responseBody).to.have.property(\"id\");\r",
+							"    pm.expect(responseBody).to.have.property(\"subCategoryName\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"// Parse the response body JSON\r",
+							"var responseBody = pm.response.json();\r",
+							"\r",
+							"// Extract the category ID\r",
+							"var categoryId = responseBody.segment.category.id;\r",
+							"\r",
+							"// Set the postId and categoryId environment variables\r",
+							"pm.environment.set(\"postId\", responseBody.id);\r",
+							"pm.environment.set(\"categoryId\", categoryId);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"postId\", \"\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"subCategoryName\": \"New subTest\",\r\n    \"isCompleted\": false,\r\n    \"segmentId\": 1,\r\n    \"questions\": [] ,\r\n    \"segment\":{\r\n        \"segmentName\": \"segmentTest\",\r\n \"category\":{\r\n    \"categoryName\": \"CategoryTest\"\r\n }\r\n    }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7257/api/subCategory",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7257",
+					"path": [
+						"api",
+						"subCategory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:7257/api/category Put Category",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test('Status code is 200', function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test('Response body contains updated data', function () {\r",
+							"    var responseBody = pm.response.json();\r",
+							"    pm.expect(responseBody).to.have.property('id');\r",
+							"    pm.expect(responseBody).to.have.property('subCategoryName');\r",
+							"})\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": {{postId}},\r\n    \"subCategoryName\": \"Updated Test\",\r\n    \"isCompleted\": false,\r\n    \"segmentId\": 1,\r\n    \"questions\": [] ,\r\n    \"segment\":{\r\n        \"segmentName\": \"segmentTest\",\r\n \"category\":{\r\n    \"categoryName\": \"CategoryTest\"\r\n }\r\n    }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7257/api/subcategory/",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7257",
+					"path": [
+						"api",
+						"subcategory",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:7257/api/category DELETE Subcategory",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7257/api/subCategory/{{postId}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7257",
+					"path": [
+						"api",
+						"subCategory",
+						"{{postId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:7257/api/category GET SubCategory By ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"request successfull\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7257/api/subCategory/{{postId}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7257",
+					"path": [
+						"api",
+						"subCategory",
+						"{{postId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:7257/api/category DELETE CATEGORY",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7257/api/Category/{{categoryId}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7257",
+					"path": [
+						"api",
+						"Category",
+						"{{categoryId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.collectionVariables.set(\"postId\", \"\");"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"if (pm.collectionVariables.has(\"postId\")) {\r",
+					"    var postId = pm.collectionVariables.get(\"postId\");\r",
+					"    // Use postId in your test\r",
+					"} else {\r",
+					"    console.log(\"postId is not set in the collection variables\");\r",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "postId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
