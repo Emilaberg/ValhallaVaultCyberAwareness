@@ -81,17 +81,17 @@ builder.Services.AddCors(options =>
 
 //Den här måste vara utkommenterad när man skapar database för första gången.
 
-using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
-{
-    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
-    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
+//{
+//    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
+//    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    RoleManager createRoleManager = new RoleManager(signInManager, roleManager);
-    createRoleManager.InitialAdminAccount();
+//    RoleManager createRoleManager = new RoleManager(signInManager, roleManager);
+//    createRoleManager.InitialAdminAccount();
 
     //lade till så att det skapas en member också när man startar appen, samma logik som för admin account. kolla Rolemanager för credentials albin //Emil
-    createRoleManager.InitialMemberAccount();
-}
+//    createRoleManager.InitialMemberAccount();
+//}
 
 
 var app = builder.Build();
