@@ -1,4 +1,6 @@
-﻿#länk till cypress ui testing för valhalla 
+﻿#Emil Dokumentation
+
+#länk till cypress ui testing för valhalla 
 https://github.com/Emilaberg/valhallatesting-ui
 
 #Hittade test - vilka metoder och delar i projektet behövs testas
@@ -13,11 +15,13 @@ https://github.com/Emilaberg/valhallatesting-ui
 			- AddCategory
 			- GetCategoryById
 			- DeleteCategory
+		Dessa är inte med då de överlappar med de tester som de andra i gruppen gjorde.
 
 	#CypressTester för att kolla om man svarat rätt
 		- Prova att svara på en fel fråga
 		- Prova att svara på rätt fråga
-		- Prova ladda nästa fråga i ui.
+		- Prova ladda ny fråga
+		- Prova ladda föregående fråga
 
 
 	#UnitTester För Question Page
@@ -35,14 +39,20 @@ https://github.com/Emilaberg/valhallatesting-ui
 
 	#CypressTester
 		#FeatureTest på loginlogik
+			- Denna är inte med då det överlappar med de tester som de andra i gruppen gjorde
 		#FeatureTester på Question Page
-			-
+			- Ladda ny fråga
+			- Ladda föregående fråga
+			- svara på rätt fråga
+			- svara på fel fråga
 
 	# Postman tester gjorda på laptop som en collection.
-
+		- dessa är inte med då det överlappar med det tester som de andra i gruppen gjorde.
 #modiferad kod
 Ex: CategoryController rad:31 "lagt till HttpGet"
-	- Skapat en ny questionPage för att kunna göra unit testing och ui testing. 
 
-
+	# Skapat en ny questionPage för att kunna göra unit testing och ui testing. 
+	# lade till en varning att man svarat fel för att kunna testa att svara fel i cypress. Questions.razor rad:37-41
+	# lade till en counter som visar vilken fråga man är på för att testa i att visa nästa fråga i cypress. Questions.razor rad:
+	# lade till så att en av byta fråga knapparna inte finns om man är på sista respektiva första frågan
 

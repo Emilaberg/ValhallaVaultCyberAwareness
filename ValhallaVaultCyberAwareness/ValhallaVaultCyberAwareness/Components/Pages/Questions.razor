@@ -7,39 +7,52 @@
 
 
 <h3>Questions</h3>
+<p style="color:white">Question @currentQuestion / @AllQuestions.Count</p>
 @if(AllQuestions == null)
 {
     <div>Loading...</div>
 }else
 {
     <div>
-        @if(currentQuestion != AllQuestions.Count)
+        @if(currentQuestion != AllQuestions.Count + 1)
         {
             <div>
                 <h1 style="color:white;">
-                    @AllQuestions[currentQuestion].Question
+                    @AllQuestions[currentQuestion - 1].Question
                 </h1>
 
                 <div>
-                    @foreach (var prompt in AllQuestions[currentQuestion].Prompts)
+                    @foreach (var prompt in AllQuestions[currentQuestion - 1].Prompts)
                     {
                         <div style="color:white;">
-                            <input type="radio" id="@prompt.Id" name="prompt" value="@prompt.Prompt" @onclick="() => setAnswer(prompt)">
+                            <input type="radio" id="@prompt.Id" name="prompt" value="@prompt.Id" @onclick="() => setAnswer(prompt)">
                             <label for="prompt">@prompt.Prompt</label>
                         </div>
                     }
                 </div>
                 @if(answeredCorrect)
                 {
-                    <div style="color:white;">
+                    <div id="Correct" style="color:white;">
                         You answered correctly!
+                    </div>
+                }else if(answeredWrong)
+                {
+                    <div id="inCorrect" style="color:red;">
+                        You answered wrong!
                     </div>
                 }
 
                 <button style="color:white;"  @onclick="CheckAnswer">check answer</button>
-
-                <button style ="color:white;" @onclick="NextQuestion">Next question</button>
-                <button style="color:white;" @onclick="PrevQuestion">Prev question</button>
+                @if(currentQuestion - 1 != 0)
+                {
+                    <button style="color:white;" @onclick="PrevQuestion">Prev question</button>
+                    
+                }
+                @if(currentQuestion != AllQuestions.Count)
+                {
+                    <button style ="color:white;" @onclick="NextQuestion">Next question</button>
+                    
+                }
 
 
             </div>
@@ -49,9 +62,10 @@
 
 @code {
     public List<QuestionModel> AllQuestions = [];
-    public int currentQuestion = 0;
+    public int currentQuestion = 1;
 
     public bool answeredCorrect;
+    public bool answeredWrong;
     public PromptModel? answeredPrompt;
 
     protected override async Task OnInitializedAsync()
@@ -67,12 +81,13 @@
 
     public void PrevQuestion()
     {
-        if(currentQuestion == 0)
+        if(currentQuestion == 1)
         {
             return;
         }
         currentQuestion--;
         answeredCorrect = false;
+        answeredWrong = false;
         answeredPrompt = null;
     }
 
@@ -80,19 +95,25 @@
     {
         currentQuestion++;
         answeredCorrect = false;
+        answeredWrong = false;
         answeredPrompt = null;
     }
 
     public void CheckAnswer()
     {
+        //om man trycker på check answer utan att välja ett svar
         if (answeredPrompt == null)
         {
+
             return;
         }
 
         if (answeredPrompt.IsCorrect)
         {
             answeredCorrect = true;
+        }else
+        {
+            answeredWrong = true;
         }
     }
 
