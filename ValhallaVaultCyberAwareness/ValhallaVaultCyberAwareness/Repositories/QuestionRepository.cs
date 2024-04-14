@@ -13,7 +13,7 @@ namespace ValhallaVaultCyberAwareness.Repositories
         }
         public async Task<List<QuestionModel>?> GetAllQuestions()
         {
-            var questions = await _context.Questions.ToListAsync();
+            var questions = await _context.Questions.Include(q => q.Prompts).ToListAsync();
             if (questions != null)
             {
                 return questions;

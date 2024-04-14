@@ -93,6 +93,7 @@ using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider()
     createRoleManager.InitialMemberAccount();
 }
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
