@@ -373,7 +373,6 @@ else
                 selectedCategory = category;
                 await _uow.CategoryRepo.DeleteCategory(selectedCategory.Id);
                 // NavigationManager.NavigateTo(NavigationManager.ToBaseRelativePath(NavigationManager.Uri), true);
-                await _uow.CategoryRepo.GetAllCategoriesWithSegmentsAndSubCategories();
                 break;
 
             case SubCategoryModel subCategory when subCategory != null:
@@ -398,7 +397,7 @@ else
             default:
                 break;
         }
-
+        await _uow.CategoryRepo.GetAllCategoriesWithSegmentsAndSubCategories();
         ClearSelected();
     }
 

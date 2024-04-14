@@ -7,7 +7,7 @@ namespace ValhallaVaultCyberAwareness.Data.Models
         [Key]
         public int Id { get; set; }
         //själva svarsalternativet
-        [Required(ErrorMessage = "Prompt is required")]
+        //[Required(ErrorMessage = "Prompt is required")]
         public string Prompt { get; set; } = null!;
         //om denna prompten är det korrekta svaret.
         public bool IsCorrect { get; set; } = false;

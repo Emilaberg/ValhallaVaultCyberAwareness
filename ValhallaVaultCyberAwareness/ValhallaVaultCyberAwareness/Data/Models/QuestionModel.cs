@@ -8,8 +8,8 @@ namespace ValhallaVaultCyberAwareness.Data.Models
         [Key]
         public int Id { get; set; }
         //själva frågan till 
-        [Required(ErrorMessage = "Question is required")]
-        [MinLength(5, ErrorMessage = "Question name must be at least 5 characters long")]
+        //[Required(ErrorMessage = "Question is required")]
+        //[MinLength(5, ErrorMessage = "Question name must be at least 5 characters long")]
         public string Question { get; set; } = null!;
 
         //förklaring till korrekt fråga

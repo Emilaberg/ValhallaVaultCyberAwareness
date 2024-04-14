@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ValhallaVaultCyberAwareness.Components;
 using ValhallaVaultCyberAwareness.Components.Account;
 using ValhallaVaultCyberAwareness.Data;
+using ValhallaVaultCyberAwareness.Data.Managers;
 using ValhallaVaultCyberAwareness.Midleware;
 using ValhallaVaultCyberAwareness.Repositories;
 
@@ -15,7 +16,12 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddControllers();
+//för apitester
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.IgnoreNullValues = true;
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -75,17 +81,17 @@ builder.Services.AddCors(options =>
 
 //Den här måste vara utkommenterad när man skapar database för första gången.
 
-//using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
-//{
-//    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
-//    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+using (ServiceProvider serviceProvider = builder.Services.BuildServiceProvider())
+{
+    var signInManager = serviceProvider.GetRequiredService<SignInManager<ApplicationUser>>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-//    RoleManager createRoleManager = new RoleManager(signInManager, roleManager);
-//    createRoleManager.InitialAdminAccount();
+    RoleManager createRoleManager = new RoleManager(signInManager, roleManager);
+    createRoleManager.InitialAdminAccount();
 
-//    //lade till så att det skapas en member också när man startar appen, samma logik som för admin account. kolla Rolemanager för credentials albin //Emil
-//    createRoleManager.InitialMemberAccount();
-//}
+    //lade till så att det skapas en member också när man startar appen, samma logik som för admin account. kolla Rolemanager för credentials albin //Emil
+    createRoleManager.InitialMemberAccount();
+}
 
 var app = builder.Build();
 
