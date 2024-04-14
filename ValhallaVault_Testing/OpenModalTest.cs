@@ -13,7 +13,7 @@ namespace ValhallaVault_Testing
             page = new AdminView();
         }
 
-        //Tester för OpenEditModal med olika modeller
+        //Tests for openEditModal with different models
 
         [Fact]
         public void OpenEditModal_SetsSelectedCategory()
